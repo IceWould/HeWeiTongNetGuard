@@ -1,0 +1,3 @@
+C:/Users/pwz26/OneDrive/Desktop/NetGuard-2.294/app/.cxx/cmake/play/x86_64/CMakeFiles/rebuild_cache.dir
+C:/Users/pwz26/OneDrive/Desktop/NetGuard-2.294/app/.cxx/cmake/play/x86_64/CMakeFiles/netguard.dir
+C:/Users/pwz26/OneDrive/Desktop/NetGuard-2.294/app/.cxx/cmake/play/x86_64/CMakeFiles/edit_cache.dir

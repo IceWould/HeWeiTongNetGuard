@@ -1,0 +1,3 @@
+C:/Users/pwz26/OneDrive/Desktop/NetGuard-2.294/app/.cxx/cmake/debug/armeabi-v7a/CMakeFiles/rebuild_cache.dir
+C:/Users/pwz26/OneDrive/Desktop/NetGuard-2.294/app/.cxx/cmake/debug/armeabi-v7a/CMakeFiles/netguard.dir
+C:/Users/pwz26/OneDrive/Desktop/NetGuard-2.294/app/.cxx/cmake/debug/armeabi-v7a/CMakeFiles/edit_cache.dir
