@@ -349,8 +349,9 @@ public class AdapterRule extends RecyclerView.Adapter<AdapterRule.ViewHolder> im
         holder.llApplication.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                rule.expanded = !rule.expanded;
-                notifyItemChanged(holder.getAdapterPosition());
+                // 210309 disabled the unfolding function of the sub-menu
+//                rule.expanded = !rule.expanded;
+//                notifyItemChanged(holder.getAdapterPosition());
             }
         });
 
