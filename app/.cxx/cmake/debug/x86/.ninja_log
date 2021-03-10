@@ -1,12 +1,12 @@
 # ninja log v5
-3	531	1615263173	CMakeFiles/netguard.dir/src/main/jni/netguard/session.c.o	9ab5844aa3060689
-7	627	1615263173	CMakeFiles/netguard.dir/src/main/jni/netguard/ip.c.o	696d826d1b15677c
-11	641	1615263173	CMakeFiles/netguard.dir/src/main/jni/netguard/udp.c.o	936f24173cf997a1
-14	677	1615263173	CMakeFiles/netguard.dir/src/main/jni/netguard/icmp.c.o	7178b3e1f8710539
-10	683	1615263173	CMakeFiles/netguard.dir/src/main/jni/netguard/tcp.c.o	cbd2b3de5b6ceaf6
-537	685	1615263173	CMakeFiles/netguard.dir/src/main/jni/netguard/dns.c.o	dd70b8b5292589f3
-0	699	1615263173	CMakeFiles/netguard.dir/src/main/jni/netguard/netguard.c.o	49a9c824eb5b8387
-638	779	1615263173	CMakeFiles/netguard.dir/src/main/jni/netguard/dhcp.c.o	a88d839fd3b56703
-641	780	1615263173	CMakeFiles/netguard.dir/src/main/jni/netguard/pcap.c.o	e85ac9a7a83981ff
-678	835	1615263173	CMakeFiles/netguard.dir/src/main/jni/netguard/util.c.o	b1471bf5d374d483
-835	916	1615263174	../../../../build/intermediates/cmake/debug/obj/x86/libnetguard.so	75b3f010f19baa04
+29	1388	637066809	CMakeFiles/netguard.dir/src/main/jni/netguard/dhcp.c.o	6e690a804086ea31
+22	1392	637066809	CMakeFiles/netguard.dir/src/main/jni/netguard/dns.c.o	aeedc3dc18de9508
+10	1399	637066809	CMakeFiles/netguard.dir/src/main/jni/netguard/icmp.c.o	36e14cfeb8878b2c
+25	1400	637066809	CMakeFiles/netguard.dir/src/main/jni/netguard/util.c.o	d03c69b00eae91da
+1	1401	637066809	CMakeFiles/netguard.dir/src/main/jni/netguard/session.c.o	c3d94e66b8e142b1
+18	1402	637066809	CMakeFiles/netguard.dir/src/main/jni/netguard/pcap.c.o	c18faf795eaf7105
+15	1424	637066809	CMakeFiles/netguard.dir/src/main/jni/netguard/ip.c.o	51f5aa7337f1ce92
+7	1435	637066809	CMakeFiles/netguard.dir/src/main/jni/netguard/udp.c.o	fd6732a2db615152
+5	1451	637066809	CMakeFiles/netguard.dir/src/main/jni/netguard/netguard.c.o	527a8f692250fa45
+12	1460	637066809	CMakeFiles/netguard.dir/src/main/jni/netguard/tcp.c.o	1cf97409290ecc1f
+1460	1548	637066810	../../../../build/intermediates/cmake/debug/obj/x86/libnetguard.so	b20143c1a578c37b

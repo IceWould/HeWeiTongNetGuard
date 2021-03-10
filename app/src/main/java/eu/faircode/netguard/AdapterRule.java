@@ -127,12 +127,12 @@ public class AdapterRule extends RecyclerView.Adapter<AdapterRule.ViewHolder> im
         public CheckBox cbWifi;
         public ImageView ivScreenWifi;
 
-        public CheckBox cbOther;
-        public ImageView ivScreenOther;
-        public TextView tvRoaming;
-
-        public TextView tvRemarkMessaging;
-        public TextView tvRemarkDownload;
+//        public CheckBox cbOther;
+//        public ImageView ivScreenOther;
+//        public TextView tvRoaming;
+//
+//        public TextView tvRemarkMessaging;
+//        public TextView tvRemarkDownload;
 
         public LinearLayout llConfiguration;
         public TextView tvUid;
@@ -187,12 +187,12 @@ public class AdapterRule extends RecyclerView.Adapter<AdapterRule.ViewHolder> im
             cbWifi = itemView.findViewById(R.id.cbWifi);
             ivScreenWifi = itemView.findViewById(R.id.ivScreenWifi);
 
-            cbOther = itemView.findViewById(R.id.cbOther);
-            ivScreenOther = itemView.findViewById(R.id.ivScreenOther);
-            tvRoaming = itemView.findViewById(R.id.tvRoaming);
+//            cbOther = itemView.findViewById(R.id.cbOther);
+//            ivScreenOther = itemView.findViewById(R.id.ivScreenOther);
+//            tvRoaming = itemView.findViewById(R.id.tvRoaming);
 
-            tvRemarkMessaging = itemView.findViewById(R.id.tvRemarkMessaging);
-            tvRemarkDownload = itemView.findViewById(R.id.tvRemarkDownload);
+//            tvRemarkMessaging = itemView.findViewById(R.id.tvRemarkMessaging);
+//            tvRemarkDownload = itemView.findViewById(R.id.tvRemarkDownload);
 
             llConfiguration = itemView.findViewById(R.id.llConfiguration);
             tvUid = itemView.findViewById(R.id.tvUid);
@@ -243,18 +243,18 @@ public class AdapterRule extends RecyclerView.Adapter<AdapterRule.ViewHolder> im
                 }
             });
 
-            final View otherParent = (View) cbOther.getParent();
-            otherParent.post(new Runnable() {
-                public void run() {
-                    Rect rect = new Rect();
-                    cbOther.getHitRect(rect);
-                    rect.bottom += rect.top;
-                    rect.right += rect.left;
-                    rect.top = 0;
-                    rect.left = 0;
-                    otherParent.setTouchDelegate(new TouchDelegate(rect, cbOther));
-                }
-            });
+//            final View otherParent = (View) cbOther.getParent();
+//            otherParent.post(new Runnable() {
+//                public void run() {
+//                    Rect rect = new Rect();
+//                    cbOther.getHitRect(rect);
+//                    rect.bottom += rect.top;
+//                    rect.right += rect.left;
+//                    rect.top = 0;
+//                    rect.left = 0;
+//                    otherParent.setTouchDelegate(new TouchDelegate(rect, cbOther));
+//                }
+//            });
         }
     }
 
@@ -416,6 +416,7 @@ public class AdapterRule extends RecyclerView.Adapter<AdapterRule.ViewHolder> im
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 rule.wifi_blocked = isChecked;
+                rule.other_blocked = isChecked;
                 updateRule(context, rule, true, listAll);
             }
         });
@@ -429,36 +430,36 @@ public class AdapterRule extends RecyclerView.Adapter<AdapterRule.ViewHolder> im
         }
 
         // Mobile settings
-        holder.cbOther.setEnabled(rule.apply);
-        holder.cbOther.setAlpha(otherActive ? 1 : 0.5f);
-        holder.cbOther.setOnCheckedChangeListener(null);
-        holder.cbOther.setChecked(rule.other_blocked);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            Drawable wrap = DrawableCompat.wrap(CompoundButtonCompat.getButtonDrawable(holder.cbOther));
-            DrawableCompat.setTint(wrap, rule.apply ? (rule.other_blocked ? colorOff : colorOn) : colorGrayed);
-        }
-        holder.cbOther.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                rule.other_blocked = isChecked;
-                updateRule(context, rule, true, listAll);
-            }
-        });
+//        holder.cbOther.setEnabled(rule.apply);
+//        holder.cbOther.setAlpha(otherActive ? 1 : 0.5f);
+//        holder.cbOther.setOnCheckedChangeListener(null);
+//        holder.cbOther.setChecked(rule.other_blocked);
+//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+//            Drawable wrap = DrawableCompat.wrap(CompoundButtonCompat.getButtonDrawable(holder.cbOther));
+//            DrawableCompat.setTint(wrap, rule.apply ? (rule.other_blocked ? colorOff : colorOn) : colorGrayed);
+//        }
+//        holder.cbOther.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+//                rule.other_blocked = isChecked;
+//                updateRule(context, rule, true, listAll);
+//            }
+//        });
 
-        holder.ivScreenOther.setEnabled(rule.apply);
-        holder.ivScreenOther.setAlpha(otherActive ? 1 : 0.5f);
-        holder.ivScreenOther.setVisibility(rule.screen_other && rule.other_blocked ? View.VISIBLE : View.INVISIBLE);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            Drawable wrap = DrawableCompat.wrap(holder.ivScreenOther.getDrawable());
-            DrawableCompat.setTint(wrap, rule.apply ? colorOn : colorGrayed);
-        }
+//        holder.ivScreenOther.setEnabled(rule.apply);
+//        holder.ivScreenOther.setAlpha(otherActive ? 1 : 0.5f);
+//        holder.ivScreenOther.setVisibility(rule.screen_other && rule.other_blocked ? View.VISIBLE : View.INVISIBLE);
+//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+//            Drawable wrap = DrawableCompat.wrap(holder.ivScreenOther.getDrawable());
+//            DrawableCompat.setTint(wrap, rule.apply ? colorOn : colorGrayed);
+//        }
 
-        holder.tvRoaming.setTextColor(rule.apply ? colorOff : colorGrayed);
-        holder.tvRoaming.setAlpha(otherActive ? 1 : 0.5f);
-        holder.tvRoaming.setVisibility(rule.roaming && (!rule.other_blocked || rule.screen_other) ? View.VISIBLE : View.INVISIBLE);
+//        holder.tvRoaming.setTextColor(rule.apply ? colorOff : colorGrayed);
+//        holder.tvRoaming.setAlpha(otherActive ? 1 : 0.5f);
+//        holder.tvRoaming.setVisibility(rule.roaming && (!rule.other_blocked || rule.screen_other) ? View.VISIBLE : View.INVISIBLE);
 
-        holder.tvRemarkMessaging.setVisibility(messaging.contains(rule.packageName) ? View.VISIBLE : View.GONE);
-        holder.tvRemarkDownload.setVisibility(download.contains(rule.packageName) ? View.VISIBLE : View.GONE);
+//        holder.tvRemarkMessaging.setVisibility(messaging.contains(rule.packageName) ? View.VISIBLE : View.GONE);
+//        holder.tvRemarkDownload.setVisibility(download.contains(rule.packageName) ? View.VISIBLE : View.GONE);
 
         // Expanded configuration section
         holder.llConfiguration.setVisibility(rule.expanded ? View.VISIBLE : View.GONE);
@@ -607,7 +608,7 @@ public class AdapterRule extends RecyclerView.Adapter<AdapterRule.ViewHolder> im
                     public void onSure() {
                         holder.cbApply.setChecked(true);
                         holder.cbWifi.setChecked(rule.wifi_default);
-                        holder.cbOther.setChecked(rule.other_default);
+//                        holder.cbOther.setChecked(rule.other_default);
                         holder.cbScreenWifi.setChecked(rule.screen_wifi_default);
                         holder.cbScreenOther.setChecked(rule.screen_other_default);
                         holder.cbRoaming.setChecked(rule.roaming_default);

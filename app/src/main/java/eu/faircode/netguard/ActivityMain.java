@@ -111,9 +111,11 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
     public static final String EXTRA_CONNECTED = "Connected";
     public static final String EXTRA_METERED = "Metered";
     public static final String EXTRA_SIZE = "Size";
+    public static final String FLOAT_WINDOW_TAG = "FloatWindow";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        EasyFloat.with(this).setLayout(R.layout.floatingwindow).setShowPattern(ShowPattern.ALL_TIME).setGravity(Gravity.END | Gravity.CENTER_VERTICAL, 0, 200).setTag(FLOAT_WINDOW_TAG).show();
         Log.i(TAG, "Create version=" + Util.getSelfVersionName(this) + "/" + Util.getSelfVersionCode(this));
         Util.logExtras(getIntent());
 
@@ -193,6 +195,7 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
         // On/off switch
         swEnabled.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                View floatView = EasyFloat.getAppFloatView(FLOAT_WINDOW_TAG);
                 Log.i(TAG, "Switch=" + isChecked);
                 prefs.edit().putBoolean("enabled", isChecked).apply();
 
@@ -207,12 +210,16 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
                                 if (lockdown != 0) {
                                     swEnabled.setChecked(false);
                                     Toast.makeText(ActivityMain.this, R.string.msg_always_on_lockdown, Toast.LENGTH_LONG).show();
+                                    if(floatView != null)
+                                        floatView.setVisibility(View.GONE);;
                                     return;
                                 }
                             }
                         } else {
                             swEnabled.setChecked(false);
                             Toast.makeText(ActivityMain.this, R.string.msg_always_on, Toast.LENGTH_LONG).show();
+                            if(floatView != null)
+                                floatView.setVisibility(View.GONE);;
                             return;
                         }
 
@@ -261,10 +268,17 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
                         // Prepare failed
                         Log.e(TAG, ex.toString() + "\n" + Log.getStackTraceString(ex));
                         prefs.edit().putBoolean("enabled", false).apply();
+                        if(floatView != null)
+                            floatView.setVisibility(View.GONE);;
                     }
-
-                } else
+                    if(floatView != null)
+                        floatView.setVisibility(View.VISIBLE);
+                } else{
                     ServiceSinkhole.stop("switch off", ActivityMain.this, false);
+                    System.out.println("Reach here!!");
+                    if(floatView != null)
+                        floatView.setVisibility(View.GONE);;
+                }
             }
         });
         swEnabled.setChecked(enabled);
@@ -479,7 +493,6 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
     protected void onStart() {
         super.onStart();
         // Test floating window
-        EasyFloat.with(this).setLayout(R.layout.floatingwindow).setShowPattern(ShowPattern.ALL_TIME).show();
     }
 
     @Override
@@ -587,7 +600,6 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
             iab.unbind();
             iab = null;
         }
-
         super.onDestroy();
     }
 

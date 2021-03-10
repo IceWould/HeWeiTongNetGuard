@@ -1,19 +1,19 @@
 {
   "buildFiles": [
-    "/Users/gungnir/Desktop/IceWould/HeWeiTongNetGuard/app/CMakeLists.txt",
-    "/Users/gungnir/Library/Android/sdk/ndk/21.1.6352462/build/cmake/android.toolchain.cmake",
-    "/Users/gungnir/Library/Android/sdk/ndk/21.1.6352462/build/cmake/platforms.cmake"
+    "C:\\Users\\pwz26\\OneDrive\\Desktop\\HeWeiTongNetGuard\\app\\CMakeLists.txt",
+    "C:\\Users\\pwz26\\AppData\\Local\\Android\\Sdk\\ndk\\21.1.6352462\\build\\cmake\\android.toolchain.cmake",
+    "C:\\Users\\pwz26\\AppData\\Local\\Android\\Sdk\\ndk\\21.1.6352462\\build\\cmake\\platforms.cmake"
   ],
   "cleanCommands": [
-    "/Users/gungnir/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja -C \"/Users/gungnir/Desktop/IceWould/HeWeiTongNetGuard/app/.cxx/cmake/debug/x86_64\" clean"
+    "C:\\Users\\pwz26\\AppData\\Local\\Android\\Sdk\\cmake\\3.10.2.4988404\\bin\\ninja.exe -C \"C:\\Users\\pwz26\\OneDrive\\Desktop\\HeWeiTongNetGuard\\app\\.cxx\\cmake\\debug\\x86_64\" clean"
   ],
-  "buildTargetsCommand": "/Users/gungnir/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja  -C \"/Users/gungnir/Desktop/IceWould/HeWeiTongNetGuard/app/.cxx/cmake/debug/x86_64\" {LIST_OF_TARGETS_TO_BUILD}",
+  "buildTargetsCommand": "C:\\Users\\pwz26\\AppData\\Local\\Android\\Sdk\\cmake\\3.10.2.4988404\\bin\\ninja.exe  -C \"C:\\Users\\pwz26\\OneDrive\\Desktop\\HeWeiTongNetGuard\\app\\.cxx\\cmake\\debug\\x86_64\" {LIST_OF_TARGETS_TO_BUILD}",
   "libraries": {
     "netguard-Debug-x86_64": {
       "artifactName": "netguard",
-      "buildCommand": "/Users/gungnir/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja -C \"/Users/gungnir/Desktop/IceWould/HeWeiTongNetGuard/app/.cxx/cmake/debug/x86_64\" netguard",
+      "buildCommand": "C:\\Users\\pwz26\\AppData\\Local\\Android\\Sdk\\cmake\\3.10.2.4988404\\bin\\ninja.exe -C \"C:\\Users\\pwz26\\OneDrive\\Desktop\\HeWeiTongNetGuard\\app\\.cxx\\cmake\\debug\\x86_64\" netguard",
       "abi": "x86_64",
-      "output": "/Users/gungnir/Desktop/IceWould/HeWeiTongNetGuard/app/build/intermediates/cmake/debug/obj/x86_64/libnetguard.so",
+      "output": "C:\\Users\\pwz26\\OneDrive\\Desktop\\HeWeiTongNetGuard\\app\\build\\intermediates\\cmake\\debug\\obj\\x86_64\\libnetguard.so",
       "runtimeFiles": []
     }
   }
