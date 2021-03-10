@@ -70,6 +70,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.lzf.easyfloat.EasyFloat;
+import com.lzf.easyfloat.enums.ShowPattern;
+
 import java.util.List;
 
 public class ActivityMain extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -470,6 +473,13 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
 
         prefs.edit().putBoolean("enable", true).apply();
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Test floating window
+        EasyFloat.with(this).setLayout(R.layout.floatingwindow).setShowPattern(ShowPattern.ALL_TIME).show();
     }
 
     @Override
