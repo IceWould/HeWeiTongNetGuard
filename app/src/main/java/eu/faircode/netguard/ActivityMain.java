@@ -550,7 +550,8 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
         final View mView = LayoutInflater.from(getApplicationContext()).inflate(
                 R.layout.warning, null);
         //单击View是关闭弹窗
-        mView.setOnClickListener(new View.OnClickListener() {
+        Button confirmBtn = mView.findViewById(R.id.confirm);
+        confirmBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 wm.removeView(mView);
