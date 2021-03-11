@@ -474,13 +474,13 @@ public class Rule {
     }
 
 
-    public static int getTimesmorning(){
+    public static long getTimesMorning(){
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.MILLISECOND, 0);
-        return (int) (cal.getTimeInMillis()/1000);
+        return cal.getTimeInMillis();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -491,9 +491,8 @@ public class Rule {
 
         NetworkStats summaryStats;
         NetworkStats.Bucket summaryBucket = new NetworkStats.Bucket();
-
         try {
-            summaryStats = networkStatsManager.querySummary(ConnectivityManager.TYPE_WIFI, "", getTimesmorning(), System.currentTimeMillis());
+            summaryStats = networkStatsManager.querySummary(ConnectivityManager.TYPE_WIFI, "", getTimesMorning(), System.currentTimeMillis());
             do {
                 summaryStats.getNextBucket(summaryBucket);
                 int summaryUid = summaryBucket.getUid();

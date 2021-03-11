@@ -45,7 +45,7 @@
                 android:gravity="center_vertical"
                 android:paddingStart="8dp"
                 android:paddingLeft="8dp"
-                android:textAppearance="@style/TextMedium" />
+                android:textAppearance="@style/TextSmall" />
 
             <TextView
                 android:id="@+id/tvUsage"
@@ -56,7 +56,7 @@
                 android:gravity="center_vertical"
                 android:paddingStart="8dp"
                 android:paddingLeft="8dp"
-                android:textAppearance="@style/TextMedium" />
+                android:textAppearance="@style/TextSmall" />
 
         </LinearLayout>
 
