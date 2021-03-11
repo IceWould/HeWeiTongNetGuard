@@ -57,6 +57,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -511,6 +512,32 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
     protected void onStart() {
         super.onStart();
         // Test floating window
+
+        final WindowManager wm = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
+        WindowManager.LayoutParams para = new WindowManager.LayoutParams();
+        //设置弹窗的宽高
+        para.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        para.width = WindowManager.LayoutParams.WRAP_CONTENT;
+        //期望的位图格式。默认为不透明
+        para.format = 1;
+        //当FLAG_DIM_BEHIND设置后生效。该变量指示后面的窗口变暗的程度。
+        //1.0表示完全不透明，0.0表示没有变暗。
+        para.dimAmount = 0.6f;
+        para.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+        //设置为系统提示
+        para.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+        //获取要显示的View
+        final View mView = LayoutInflater.from(getApplicationContext()).inflate(
+                R.layout.warning, null);
+        //单击View是关闭弹窗
+        mView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                wm.removeView(mView);
+            }
+        });
+        //显示弹窗
+        wm.addView(mView, para);
     }
 
     @Override

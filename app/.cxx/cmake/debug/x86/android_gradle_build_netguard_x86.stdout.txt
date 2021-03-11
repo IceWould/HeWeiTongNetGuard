@@ -1,2 +1,2 @@
-ninja: Entering directory `C:\Users\pwz26\OneDrive\Desktop\HeWeiTongNetGuard\app\.cxx\cmake\debug\x86'
+ninja: Entering directory `/Users/gungnir/Desktop/IceWould/HeWeiTongNetGuard/app/.cxx/cmake/debug/x86'
 ninja: no work to do.
