@@ -19,6 +19,10 @@ package eu.faircode.netguard;
     Copyright 2015-2019 by Marcel Bokhorst (M66B)
 */
 
+import android.annotation.TargetApi;
+import android.app.AppOpsManager;
+import android.app.usage.NetworkStats;
+import android.app.usage.NetworkStatsManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -29,12 +33,15 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.net.VpnService;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.provider.Settings;
+import android.telephony.TelephonyManager;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -63,17 +70,22 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.core.app.ActivityCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import android.telephony.TelephonyManager;
 
 import com.lzf.easyfloat.EasyFloat;
 import com.lzf.easyfloat.enums.ShowPattern;
 
+import java.text.CharacterIterator;
+import java.text.StringCharacterIterator;
 import java.util.List;
+import java.util.Locale;
 
 public class ActivityMain extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "NetGuard.Main";
@@ -112,9 +124,15 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
     public static final String EXTRA_METERED = "Metered";
     public static final String EXTRA_SIZE = "Size";
     public static final String FLOAT_WINDOW_TAG = "FloatWindow";
+    private NetworkStatsManager networkStatsManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
+        this.hasPermissionToReadNetworkHistory();
+//        System.out.println(getAllTxBytesWifi());
+//        System.out.println(getAllRxBytesWifi());
         EasyFloat.with(this).setLayout(R.layout.floatingwindow).setShowPattern(ShowPattern.ALL_TIME).setGravity(Gravity.END | Gravity.CENTER_VERTICAL, 0, 200).setTag(FLOAT_WINDOW_TAG).show();
         Log.i(TAG, "Create version=" + Util.getSelfVersionName(this) + "/" + Util.getSelfVersionCode(this));
         Util.logExtras(getIntent());
@@ -1335,4 +1353,53 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
         }
         return intent;
     }
+
+
+    public long getAllRxBytesWifi() {
+        NetworkStats.Bucket bucket;
+        try {
+            bucket = networkStatsManager.querySummaryForDevice(ConnectivityManager.TYPE_WIFI,
+                    "",
+                    0,
+                    System.currentTimeMillis());
+        } catch (RemoteException e) {
+            return -1;
+        }
+        return bucket.getRxBytes();
+    }
+
+    public long getAllTxBytesWifi() {
+        NetworkStats.Bucket bucket;
+        try {
+            bucket = networkStatsManager.querySummaryForDevice(ConnectivityManager.TYPE_WIFI,
+                    "",
+                    0,
+                    System.currentTimeMillis());
+        } catch (RemoteException e) {
+            return -1;
+        }
+        return bucket.getTxBytes();
+    }
+
+    private boolean hasPermissionToReadNetworkHistory() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return true;
+        }
+        final AppOpsManager appOps = (AppOpsManager) getSystemService(Context.APP_OPS_SERVICE);
+        int mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
+                android.os.Process.myUid(), getPackageName());
+        if (mode == AppOpsManager.MODE_ALLOWED) {
+            return true;
+        }
+        requestReadNetworkHistoryAccess();
+        return false;
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void requestReadNetworkHistoryAccess() {
+        Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+        startActivity(intent);
+    }
+
+
 }

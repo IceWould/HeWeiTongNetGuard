@@ -173,6 +173,7 @@
       "project": {
         "compilerSettingsCacheFolder": "C:\\Users\\pwz26\\OneDrive\\Desktop\\HeWeiTongNetGuard\\.cxx",
         "cxxFolder": "C:\\Users\\pwz26\\OneDrive\\Desktop\\HeWeiTongNetGuard\\.cxx",
+        "ideBuildTargetAbi": "arm64-v8a,armeabi-v7a,armeabi",
         "isBuildOnlyTargetAbiEnabled": true,
         "isCmakeBuildCohabitationEnabled": false,
         "isNativeCompilerSettingsCacheEnabled": false,
@@ -196,10 +197,7 @@
     "objFolder": "C:\\Users\\pwz26\\OneDrive\\Desktop\\HeWeiTongNetGuard\\app\\build\\intermediates\\cmake\\debug\\obj",
     "variantName": "debug",
     "validAbiList": [
-      "ARMEABI_V7A",
-      "ARM64_V8A",
-      "X86",
-      "X86_64"
+      "ARM64_V8A"
     ],
     "prefabDirectory": "C:\\Users\\pwz26\\OneDrive\\Desktop\\HeWeiTongNetGuard\\app\\.cxx\\cmake\\debug\\prefab",
     "prefabPackageDirectoryList": []

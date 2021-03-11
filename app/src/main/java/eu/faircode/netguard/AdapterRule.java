@@ -95,21 +95,21 @@ public class AdapterRule extends RecyclerView.Adapter<AdapterRule.ViewHolder> im
     private List<Rule> listAll = new ArrayList<>();
     private List<Rule> listFiltered = new ArrayList<>();
 
-    private List<String> messaging = Arrays.asList(
-            "com.discord",
-            "com.facebook.mlite",
-            "com.facebook.orca",
-            "com.instagram.android",
-            "com.Slack",
-            "com.skype.raider",
-            "com.snapchat.android",
-            "com.whatsapp",
-            "com.whatsapp.w4b"
-    );
-
-    private List<String> download = Arrays.asList(
-            "com.google.android.youtube"
-    );
+//    private List<String> messaging = Arrays.asList(
+//            "com.discord",
+//            "com.facebook.mlite",
+//            "com.facebook.orca",
+//            "com.instagram.android",
+//            "com.Slack",
+//            "com.skype.raider",
+//            "com.snapchat.android",
+//            "com.whatsapp",
+//            "com.whatsapp.w4b"
+//    );
+//
+//    private List<String> download = Arrays.asList(
+//            "com.google.android.youtube"
+//    );
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public View view;
@@ -118,6 +118,7 @@ public class AdapterRule extends RecyclerView.Adapter<AdapterRule.ViewHolder> im
         public ImageView ivIcon;
         public ImageView ivExpander;
         public TextView tvName;
+        public TextView tvUsage;
 
         public TextView tvHosts;
 
@@ -178,6 +179,7 @@ public class AdapterRule extends RecyclerView.Adapter<AdapterRule.ViewHolder> im
             ivIcon = itemView.findViewById(R.id.ivIcon);
             ivExpander = itemView.findViewById(R.id.ivExpander);
             tvName = itemView.findViewById(R.id.tvName);
+            tvUsage = itemView.findViewById(R.id.tvUsage);
 
             tvHosts = itemView.findViewById(R.id.tvHosts);
 
@@ -377,12 +379,14 @@ public class AdapterRule extends RecyclerView.Adapter<AdapterRule.ViewHolder> im
 
         // Show application label
         holder.tvName.setText(rule.name);
+        holder.tvUsage.setText("已用：" + rule.usage);
 
         // Show application state
         int color = rule.system ? colorOff : colorText;
         if (!rule.internet || !rule.enabled)
             color = Color.argb(128, Color.red(color), Color.green(color), Color.blue(color));
         holder.tvName.setTextColor(color);
+        holder.tvUsage.setTextColor(color);
 
         holder.tvHosts.setVisibility(rule.hosts > 0 ? View.VISIBLE : View.GONE);
         holder.tvHosts.setText(Long.toString(rule.hosts));

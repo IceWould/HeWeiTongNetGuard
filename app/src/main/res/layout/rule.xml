@@ -46,6 +46,18 @@
                 android:paddingStart="8dp"
                 android:paddingLeft="8dp"
                 android:textAppearance="@style/TextMedium" />
+
+            <TextView
+                android:id="@+id/tvUsage"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:paddingStart="8dp"
+                android:paddingLeft="8dp"
+                android:textAppearance="@style/TextMedium" />
+
         </LinearLayout>
 
         <TextView
@@ -140,7 +152,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginStart="32dp"
-        android:layout_marginLeft="32dp"
         android:layout_marginTop="8dp"
         android:orientation="vertical"
         android:visibility="gone">

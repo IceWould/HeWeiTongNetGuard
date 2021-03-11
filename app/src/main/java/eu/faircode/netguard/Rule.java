@@ -19,6 +19,8 @@ package eu.faircode.netguard;
     Copyright 2015-2019 by Marcel Bokhorst (M66B)
 */
 
+import android.app.usage.NetworkStats;
+import android.app.usage.NetworkStatsManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
@@ -26,23 +28,33 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.XmlResourceParser;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Process;
+import android.os.RemoteException;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import androidx.annotation.RequiresApi;
 import androidx.preference.PreferenceManager;
 
 import org.xmlpull.v1.XmlPullParser;
 
+import java.text.CharacterIterator;
 import java.text.Collator;
+import java.text.StringCharacterIterator;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import static android.content.Context.TELEPHONY_SERVICE;
+import static androidx.core.content.ContextCompat.getSystemService;
 
 public class Rule {
     private static final String TAG = "NetGuard.Rule";
@@ -51,6 +63,7 @@ public class Rule {
     public String packageName;
     public int icon;
     public String name;
+    public String usage;
     public String version;
     public boolean system;
     public boolean internet;
@@ -202,6 +215,10 @@ public class Rule {
 
     public static List<Rule> getRules(final boolean all, Context context) {
         synchronized (context.getApplicationContext()) {
+            HashMap<Integer, Long> dataUsage = new HashMap<>();
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                dataUsage = Rule.updateDataUsage(context);
+            }
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
             SharedPreferences wifi = context.getSharedPreferences("wifi", Context.MODE_PRIVATE);
             SharedPreferences other = context.getSharedPreferences("other", Context.MODE_PRIVATE);
@@ -343,6 +360,7 @@ public class Rule {
                     if (info.applicationInfo.uid == Process.myUid())
                         continue;
 
+
                     Rule rule = new Rule(dh, info, context);
 
                     if (pre_system.containsKey(info.packageName))
@@ -383,7 +401,11 @@ public class Rule {
                         rule.related = listPkg.toArray(new String[0]);
 
                         rule.hosts = dh.getHostCount(rule.uid, true);
-
+                        if(dataUsage.containsKey(rule.uid)){
+                            rule.usage = humanReadableByteCountBin(dataUsage.get(rule.uid));
+                        }else{
+                            rule.usage = "0.0 KB";
+                        }
                         rule.updateChanged(default_wifi, default_other, default_roaming);
 
                         listRules.add(rule);
@@ -449,5 +471,61 @@ public class Rule {
     public String toString() {
         // This is used in the port forwarding dialog application selector
         return this.name;
+    }
+
+
+    public static int getTimesmorning(){
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        return (int) (cal.getTimeInMillis()/1000);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private static HashMap<Integer, Long> updateDataUsage(Context context){
+        NetworkStatsManager networkStatsManager = (NetworkStatsManager) context.getSystemService(Context.NETWORK_STATS_SERVICE);
+
+        HashMap<Integer, Long> toReturn = new HashMap<Integer, Long>();
+
+        NetworkStats summaryStats;
+        NetworkStats.Bucket summaryBucket = new NetworkStats.Bucket();
+
+        try {
+            summaryStats = networkStatsManager.querySummary(ConnectivityManager.TYPE_WIFI, "", getTimesmorning(), System.currentTimeMillis());
+            do {
+                summaryStats.getNextBucket(summaryBucket);
+                int summaryUid = summaryBucket.getUid();
+                if (toReturn.containsKey(summaryUid)) {
+                    toReturn.put(summaryUid, toReturn.get(summaryUid) + summaryBucket.getRxBytes() + summaryBucket.getTxBytes());
+                }else{
+                    toReturn.put(summaryUid, summaryBucket.getRxBytes() + summaryBucket.getTxBytes());
+                }
+            } while (summaryStats.hasNextBucket());
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
+        return  toReturn;
+    }
+
+
+    public static String humanReadableByteCountBin(Long bytes) {
+        if(bytes == null){
+            return "0 KB";
+        }
+        long absB = bytes == Long.MIN_VALUE ? Long.MAX_VALUE : Math.abs(bytes);
+        if (absB < 1024) {
+            return bytes + "0 KB";
+        }
+        long value = absB;
+        CharacterIterator ci = new StringCharacterIterator("KMGTPE");
+        for (int i = 40; i >= 0 && absB > 0xfffccccccccccccL >> i; i -= 10) {
+            value >>= 10;
+            ci.next();
+        }
+        value *= Long.signum(bytes);
+        return String.format(Locale.US, "%.1f %cB", value / 1024.0, ci.current());
     }
 }
