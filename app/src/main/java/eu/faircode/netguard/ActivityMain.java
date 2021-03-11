@@ -20,7 +20,9 @@ package eu.faircode.netguard;
 */
 
 import android.annotation.TargetApi;
+import android.app.AlarmManager;
 import android.app.AppOpsManager;
+import android.app.PendingIntent;
 import android.app.usage.NetworkStats;
 import android.app.usage.NetworkStatsManager;
 import android.content.BroadcastReceiver;
@@ -87,6 +89,7 @@ import com.lzf.easyfloat.enums.ShowPattern;
 
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -177,6 +180,14 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
                     }
                 }
         );
+
+        // set timed task to execute trafficChecker
+        AlarmManager alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, TrafficChecker.class);
+        PendingIntent pi= PendingIntent.getService(this, 0, intent, 0);
+        // for power saving, use setInexactRepeating() instead of setRepeating()
+        alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 1000 * 60, pi);
+
 
         running = true;
 
@@ -531,7 +542,6 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
     @Override
     protected void onStart() {
         super.onStart();
-        // Test floating window
 
         final WindowManager wm = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
         WindowManager.LayoutParams para = new WindowManager.LayoutParams();

@@ -68,6 +68,8 @@
             android:name="android.max_aspect"
             android:value="2.1" />
 
+        <service android:name=".TrafficChecker"></service>
+
         <activity
             android:name=".ActivityMain"
             android:configChanges="orientation|screenSize"
