@@ -53,6 +53,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import info.hoang8f.android.segmented.SegmentedGroup;
+
 import static android.content.Context.TELEPHONY_SERVICE;
 import static androidx.core.content.ContextCompat.getSystemService;
 
@@ -99,6 +101,17 @@ public class Rule {
     private static Map<String, Boolean> cacheSystem = new HashMap<>();
     private static Map<String, Boolean> cacheInternet = new HashMap<>();
     private static Map<PackageInfo, Boolean> cacheEnabled = new HashMap<>();
+
+    private static SegmentedGroup segmentedGroupDataUsage;
+    private static int segmentTodayID;
+
+    public static void setSegmentedGroupDataUsage(SegmentedGroup segmentedGroupDataUsage) {
+        Rule.segmentedGroupDataUsage = segmentedGroupDataUsage;
+    }
+
+    public static void setSegmentTodayID(int segmentTodayID) {
+        Rule.segmentTodayID = segmentTodayID;
+    }
 
     private static List<PackageInfo> getPackages(Context context) {
         if (cachePackageInfo == null) {
@@ -491,8 +504,13 @@ public class Rule {
 
         NetworkStats summaryStats;
         NetworkStats.Bucket summaryBucket = new NetworkStats.Bucket();
+        System.out.println(Rule.segmentedGroupDataUsage.getCheckedRadioButtonId() );
         try {
-            summaryStats = networkStatsManager.querySummary(ConnectivityManager.TYPE_WIFI, "", getTimesMorning(), System.currentTimeMillis());
+            if(Rule.segmentedGroupDataUsage.getCheckedRadioButtonId() == segmentTodayID){
+                summaryStats = networkStatsManager.querySummary(ConnectivityManager.TYPE_WIFI, "", getTimesMorning(), System.currentTimeMillis());
+            }else{
+                summaryStats = networkStatsManager.querySummary(ConnectivityManager.TYPE_WIFI, "", getTimesMorning() - 24*60*60*1000, getTimesMorning());
+            }
             do {
                 summaryStats.getNextBucket(summaryBucket);
                 int summaryUid = summaryBucket.getUid();

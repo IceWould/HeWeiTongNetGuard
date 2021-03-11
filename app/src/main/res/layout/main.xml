@@ -12,11 +12,43 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".ActivityMain">
 
+
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <info.hoang8f.android.segmented.SegmentedGroup
+            xmlns:segmentedgroup="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/segmentUsageBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:orientation="horizontal"
+            segmentedgroup:sc_border_width="2dp"
+            segmentedgroup:sc_corner_radius="10dp"
+            android:weightSum="2">
+
+            <RadioButton
+                android:id="@+id/btnTodayUsage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/todayDataUsage"
+                android:textAppearance="@style/TextMedium"
+                android:layout_weight="1"
+                style="@style/RadioButton" />
+
+            <RadioButton
+                android:id="@+id/btnYesterdayUsage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/yesterdayDataUsage"
+                android:textAppearance="@style/TextMedium"
+                android:layout_weight="1"
+                style="@style/RadioButton" />
+
+        </info.hoang8f.android.segmented.SegmentedGroup>
         <TextView
             android:id="@+id/tvDisabled"
             android:layout_width="match_parent"

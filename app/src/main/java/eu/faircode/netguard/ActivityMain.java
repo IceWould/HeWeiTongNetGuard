@@ -63,6 +63,8 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -88,6 +90,8 @@ import java.text.StringCharacterIterator;
 import java.util.List;
 import java.util.Locale;
 
+import info.hoang8f.android.segmented.SegmentedGroup;
+
 public class ActivityMain extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "NetGuard.Main";
 
@@ -95,7 +99,7 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
     private ImageView ivIcon;
     private ImageView ivQueue;
     private SwitchCompat swEnabled;
-    private ImageView ivMetered;
+//    private ImageView ivMetered;
     private SwipeRefreshLayout swipeRefresh;
     private AdapterRule adapter = null;
     private MenuItem menuSearch = null;
@@ -125,15 +129,14 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
     public static final String EXTRA_METERED = "Metered";
     public static final String EXTRA_SIZE = "Size";
     public static final String FLOAT_WINDOW_TAG = "FloatWindow";
-    private NetworkStatsManager networkStatsManager;
+    private static SegmentedGroup segmentedGroupDataUsage;
+    private static RadioButton btnUsageToday;
+    private static RadioButton btnUsageYesterday;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-
         this.hasPermissionToReadNetworkHistory();
-//        System.out.println(getAllTxBytesWifi());
-//        System.out.println(getAllRxBytesWifi());
         EasyFloat.with(this).setLayout(R.layout.floatingwindow).setShowPattern(ShowPattern.ALL_TIME).setGravity(Gravity.END | Gravity.CENTER_VERTICAL, 0, 200).setTag(FLOAT_WINDOW_TAG).show();
         Log.i(TAG, "Create version=" + Util.getSelfVersionName(this) + "/" + Util.getSelfVersionCode(this));
         Util.logExtras(getIntent());
@@ -158,6 +161,23 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
+
+        segmentedGroupDataUsage = (SegmentedGroup) this.findViewById(R.id.segmentUsageBtn);
+        segmentedGroupDataUsage.check(R.id.btnTodayUsage);
+        btnUsageToday = (RadioButton) this.findViewById(R.id.btnTodayUsage);
+        btnUsageYesterday = (RadioButton) this.findViewById(R.id.btnYesterdayUsage);
+        Rule.setSegmentedGroupDataUsage(segmentedGroupDataUsage);
+        Rule.setSegmentTodayID(R.id.btnTodayUsage);
+        segmentedGroupDataUsage.setId(0);
+        segmentedGroupDataUsage.setOnCheckedChangeListener(
+                new RadioGroup.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                        updateApplicationList(null);
+                    }
+                }
+        );
+
         running = true;
 
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -181,7 +201,7 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
         ivIcon = actionView.findViewById(R.id.ivIcon);
         ivQueue = actionView.findViewById(R.id.ivQueue);
         swEnabled = actionView.findViewById(R.id.swEnabled);
-        ivMetered = actionView.findViewById(R.id.ivMetered);
+//        ivMetered = actionView.findViewById(R.id.ivMetered);
 
 //        // Icon
 //        ivIcon.setOnLongClickListener(new View.OnLongClickListener() {
@@ -305,20 +325,20 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
             checkDoze();
 
         // Network is metered
-        ivMetered.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                int location[] = new int[2];
-                actionView.getLocationOnScreen(location);
-                Toast toast = Toast.makeText(ActivityMain.this, R.string.msg_metered, Toast.LENGTH_LONG);
-                toast.setGravity(
-                        Gravity.TOP | Gravity.LEFT,
-                        location[0] + ivMetered.getLeft(),
-                        Math.round(location[1] + ivMetered.getBottom() - toast.getView().getPaddingTop()));
-                toast.show();
-                return true;
-            }
-        });
+//        ivMetered.setOnLongClickListener(new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View view) {
+//                int location[] = new int[2];
+//                actionView.getLocationOnScreen(location);
+//                Toast toast = Toast.makeText(ActivityMain.this, R.string.msg_metered, Toast.LENGTH_LONG);
+//                toast.setGravity(
+//                        Gravity.TOP | Gravity.LEFT,
+//                        location[0] + ivMetered.getLeft(),
+//                        Math.round(location[1] + ivMetered.getBottom() - toast.getView().getPaddingTop()));
+//                toast.show();
+//                return true;
+//            }
+//        });
 
         getSupportActionBar().setDisplayShowCustomEnabled(true);
         getSupportActionBar().setCustomView(actionView);
@@ -773,10 +793,10 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
                             adapter.setMobileActive();
                         else
                             adapter.setWifiActive();
-                        ivMetered.setVisibility(Util.isMeteredNetwork(ActivityMain.this) ? View.VISIBLE : View.INVISIBLE);
+//                        ivMetered.setVisibility(Util.isMeteredNetwork(ActivityMain.this) ? View.VISIBLE : View.INVISIBLE);
                     } else {
                         adapter.setDisconnected();
-                        ivMetered.setVisibility(View.INVISIBLE);
+//                        ivMetered.setVisibility(View.INVISIBLE);
                     }
                 } else
                     updateApplicationList(null);
@@ -1069,6 +1089,9 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
 
             @Override
             protected void onPreExecute() {
+                segmentedGroupDataUsage.setClickable(false);
+                btnUsageToday.setClickable(false);
+                btnUsageYesterday.setClickable(false);
                 swipeRefresh.post(new Runnable() {
                     @Override
                     public void run() {
@@ -1096,6 +1119,9 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
                         swipeRefresh.setRefreshing(false);
                     }
                 }
+                segmentedGroupDataUsage.setClickable(true);
+                btnUsageToday.setClickable(true);
+                btnUsageYesterday.setClickable(true);
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
@@ -1381,32 +1407,6 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
         return intent;
     }
 
-
-    public long getAllRxBytesWifi() {
-        NetworkStats.Bucket bucket;
-        try {
-            bucket = networkStatsManager.querySummaryForDevice(ConnectivityManager.TYPE_WIFI,
-                    "",
-                    0,
-                    System.currentTimeMillis());
-        } catch (RemoteException e) {
-            return -1;
-        }
-        return bucket.getRxBytes();
-    }
-
-    public long getAllTxBytesWifi() {
-        NetworkStats.Bucket bucket;
-        try {
-            bucket = networkStatsManager.querySummaryForDevice(ConnectivityManager.TYPE_WIFI,
-                    "",
-                    0,
-                    System.currentTimeMillis());
-        } catch (RemoteException e) {
-            return -1;
-        }
-        return bucket.getTxBytes();
-    }
 
     private boolean hasPermissionToReadNetworkHistory() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {

@@ -97,4 +97,7 @@ dependencies {
 
     // floating window: https://github.com/princekin-f/EasyFloat
     implementation 'com.github.princekin-f:EasyFloat:1.3.4'
+    implementation 'info.hoang8f:android-segmented:1.0.6'
+
 }
+
