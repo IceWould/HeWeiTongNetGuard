@@ -110,6 +110,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import static eu.faircode.netguard.ActivityMain.setBtnEnabled;
+
 public class ServiceSinkhole extends VpnService implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "NetGuard.Service";
 
@@ -487,6 +489,7 @@ public class ServiceSinkhole extends VpnService implements SharedPreferences.OnS
 
         private void start() {
             if (vpn == null) {
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ServiceSinkhole.this);
                 if (state != State.none) {
                     Log.d(TAG, "Stop foreground state=" + state.toString());
                     stopForeground(true);
@@ -500,8 +503,11 @@ public class ServiceSinkhole extends VpnService implements SharedPreferences.OnS
 
                 last_builder = getBuilder(listAllowed, listRule);
                 vpn = startVPN(last_builder);
-                if (vpn == null)
+                if (vpn == null){
+                    setBtnEnabled(false);
+                    prefs.edit().putBoolean("enabled",false).apply();
                     throw new StartFailedException(getString((R.string.msg_start_failed)));
+                }
 
                 startNative(vpn, listAllowed, listRule);
 

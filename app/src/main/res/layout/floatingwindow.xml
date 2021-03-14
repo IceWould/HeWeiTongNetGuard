@@ -1,12 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <FrameLayout android:layout_height="150dp"
+        android:layout_width="128dp">
 
     <Button
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:background="@drawable/btn_shape_circle"
-        android:text="海上模式" />
+        android:id="@+id/fw_jump_btn"
+        android:layout_width="128dp"
+        android:layout_height="150dp"
+        android:background="@drawable/floatingwindow"
+        android:alpha="0.4"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginBottom="30dp"
+            android:gravity="center"
+            >
+            <TextView
+                android:id="@+id/fw_usage_number"
+                android:layout_margin="0dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="加载中"
+                android:textSize="20sp"
+                android:gravity="center"
+                />
+            <TextView
+                android:id="@+id/fw_usage_unit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:gravity="center"
+
+                />
+        </LinearLayout>
+
+    </FrameLayout>
 
 </LinearLayout>

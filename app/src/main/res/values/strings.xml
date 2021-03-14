@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">NetGuard</string>
+    <string name="app_name">NetGuard</string>
     <string name="app_description">NetGuard provides simple and advanced ways to block access to the internet - no root required. Apps and addresses can individually be allowed or denied access to your Wi-Fi and/or mobile connection.</string>
     <string name="app_copyright" translatable="false">Copyright \u00A9 2015–2020 by M. Bokhorst (M66B)</string>
     <string name="app_android">NetGuard requires Android 5.1 or later</string>
@@ -361,4 +361,7 @@ Your internet traffic is not being sent to a remote VPN server.</string>
     <string name="fingerprint" translatable="false">ef46f813d2c8a064d72c936b9b96d1cccc989378</string>
     <string name="yesterdayDataUsage">昨日流量消耗</string>
     <string name="todayDataUsage">今日流量消耗</string>
+    <string name="strActivated">已开启</string>
+    <string name="search_software">搜索软件</string>
+    <string name="refresh_hint">下拉刷新流量数据</string>
 </resources>

@@ -59,6 +59,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -71,8 +72,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.ActivityCompat;
@@ -92,6 +95,7 @@ import java.text.StringCharacterIterator;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import info.hoang8f.android.segmented.SegmentedGroup;
 
@@ -99,9 +103,9 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
     private static final String TAG = "NetGuard.Main";
 
     private boolean running = false;
-    private ImageView ivIcon;
-    private ImageView ivQueue;
-    private SwitchCompat swEnabled;
+//    private ImageView ivIcon;
+//    private ImageView ivQueue;
+    private static AppCompatButton swEnabled;
 //    private ImageView ivMetered;
     private SwipeRefreshLayout swipeRefresh;
     private AdapterRule adapter = null;
@@ -133,9 +137,23 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
     public static final String EXTRA_SIZE = "Size";
     public static final String FLOAT_WINDOW_TAG = "FloatWindow";
     private static SegmentedGroup segmentedGroupDataUsage;
-    private static RadioButton btnUsageToday;
-    private static RadioButton btnUsageYesterday;
+    private RadioButton btnUsageToday;
+    private RadioButton btnUsageYesterday;
+    private static boolean isEnabled = false;
 
+    public static void setBtnEnabled(boolean isActivated){
+        isEnabled = isActivated;
+        if(isEnabled){
+            swEnabled.setBackgroundResource(R.drawable.btn_activated_background);
+            swEnabled.setText("已开启");
+        }else{
+            swEnabled.setBackgroundResource(R.drawable.btn_deactivated_background);
+            swEnabled.setText("已关闭");
+        }
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -194,23 +212,17 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         boolean enabled = true;
         boolean initialized = prefs.getBoolean("initialized", false);
-
+        TrafficChecker.prefs = prefs;
         // Upgrade
         ReceiverAutostart.upgrade(initialized, this);
 
 
 
-        if (!getIntent().hasExtra(EXTRA_APPROVE)) {
-//            if (enabled)
-                ServiceSinkhole.start("UI", this);
-//            else
-//                ServiceSinkhole.stop("UI", this, false);
-        }
 
         // Action bar
         final View actionView = getLayoutInflater().inflate(R.layout.actionmain, null, false);
-        ivIcon = actionView.findViewById(R.id.ivIcon);
-        ivQueue = actionView.findViewById(R.id.ivQueue);
+//        ivIcon = actionView.findViewById(R.id.ivIcon);
+//        ivQueue = actionView.findViewById(R.id.ivQueue);
         swEnabled = actionView.findViewById(R.id.swEnabled);
 //        ivMetered = actionView.findViewById(R.id.ivMetered);
 
@@ -224,27 +236,29 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
 //        });
 
         // Title
-        getSupportActionBar().setTitle(null);
+        Objects.requireNonNull(getSupportActionBar()).setTitle(null);
 
-        // Netguard is busy
-        ivQueue.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                int location[] = new int[2];
-                actionView.getLocationOnScreen(location);
-                Toast toast = Toast.makeText(ActivityMain.this, R.string.msg_queue, Toast.LENGTH_LONG);
-                toast.setGravity(
-                        Gravity.TOP | Gravity.LEFT,
-                        location[0] + ivQueue.getLeft(),
-                        Math.round(location[1] + ivQueue.getBottom() - toast.getView().getPaddingTop()));
-                toast.show();
-                return true;
-            }
-        });
+//        // Netguard is busy
+//        ivQueue.setOnLongClickListener(new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View view) {
+//                int location[] = new int[2];
+//                actionView.getLocationOnScreen(location);
+//                Toast toast = Toast.makeText(ActivityMain.this, R.string.msg_queue, Toast.LENGTH_LONG);
+//                toast.setGravity(
+//                        Gravity.TOP | Gravity.LEFT,
+//                        location[0] + ivQueue.getLeft(),
+//                        Math.round(location[1] + ivQueue.getBottom() - toast.getView().getPaddingTop()));
+//                toast.show();
+//                return true;
+//            }
+//        });
 
         // On/off switch
-        swEnabled.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        swEnabled.setOnClickListener(new OnClickListener() {
+            public void onClick(View viewOuter) {
+                boolean isChecked = !isEnabled;
+                setBtnEnabled(!isEnabled);
                 View floatView = EasyFloat.getAppFloatView(FLOAT_WINDOW_TAG);
                 Log.i(TAG, "Switch=" + isChecked);
                 prefs.edit().putBoolean("enabled", isChecked).apply();
@@ -258,7 +272,7 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
                                 int lockdown = Settings.Secure.getInt(getContentResolver(), "always_on_vpn_lockdown", 0);
                                 Log.i(TAG, "Lockdown=" + lockdown);
                                 if (lockdown != 0) {
-                                    swEnabled.setChecked(false);
+                                    setBtnEnabled(false);
                                     Toast.makeText(ActivityMain.this, R.string.msg_always_on_lockdown, Toast.LENGTH_LONG).show();
                                     if(floatView != null)
                                         floatView.setVisibility(View.GONE);;
@@ -266,7 +280,7 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
                                 }
                             }
                         } else {
-                            swEnabled.setChecked(false);
+                            setBtnEnabled(false);
                             Toast.makeText(ActivityMain.this, R.string.msg_always_on, Toast.LENGTH_LONG).show();
                             if(floatView != null)
                                 floatView.setVisibility(View.GONE);;
@@ -331,9 +345,8 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
                 }
             }
         });
-        swEnabled.setChecked(enabled);
-        if (enabled)
-            checkDoze();
+        setBtnEnabled(true);
+        checkDoze();
 
         // Network is metered
 //        ivMetered.setOnLongClickListener(new View.OnLongClickListener() {
@@ -356,7 +369,7 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
 
         // Disabled warning
         TextView tvDisabled = findViewById(R.id.tvDisabled);
-        tvDisabled.setVisibility(enabled ? View.GONE : View.VISIBLE);
+        tvDisabled.setVisibility(View.GONE);
 
         // Application list
         RecyclerView rvApplication = findViewById(R.id.rvApplication);
@@ -475,7 +488,7 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
 
         // Fill application list
         updateApplicationList(getIntent().getStringExtra(EXTRA_SEARCH));
-
+        
         // Update IAB SKUs
         try {
             iab = new IAB(new IAB.Delegate() {
@@ -514,7 +527,7 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
         content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
         tvSupport.setText(content);
 
-        llSupport.setOnClickListener(new View.OnClickListener() {
+        llSupport.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(getIntentPro(ActivityMain.this));
@@ -525,6 +538,12 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
         checkExtras(getIntent());
 
 
+        if (!getIntent().hasExtra(EXTRA_APPROVE)) {
+//            if (enabled)
+            ServiceSinkhole.start("UI", this);
+//            else
+//                ServiceSinkhole.stop("UI", this, false);
+        }
         prefs.edit().putBoolean("show_system", false).apply();
         prefs.edit().putBoolean("manage_system", true).apply();
         ServiceSinkhole.reload("changed manage_system", this, false);
@@ -543,32 +562,32 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
     protected void onStart() {
         super.onStart();
 
-        final WindowManager wm = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
-        WindowManager.LayoutParams para = new WindowManager.LayoutParams();
-        //设置弹窗的宽高
-        para.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        para.width = WindowManager.LayoutParams.WRAP_CONTENT;
-        //期望的位图格式。默认为不透明
-        para.format = 1;
-        //当FLAG_DIM_BEHIND设置后生效。该变量指示后面的窗口变暗的程度。
-        //1.0表示完全不透明，0.0表示没有变暗。
-        para.dimAmount = 0.6f;
-        para.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-        //设置为系统提示
-        para.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-        //获取要显示的View
-        final View mView = LayoutInflater.from(getApplicationContext()).inflate(
-                R.layout.warning, null);
-        //单击View是关闭弹窗
-        Button confirmBtn = mView.findViewById(R.id.confirm);
-        confirmBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                wm.removeView(mView);
-            }
-        });
-        //显示弹窗
-        wm.addView(mView, para);
+//        final WindowManager wm = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
+//        WindowManager.LayoutParams para = new WindowManager.LayoutParams();
+//        //设置弹窗的宽高
+//        para.height = WindowManager.LayoutParams.WRAP_CONTENT;
+//        para.width = WindowManager.LayoutParams.WRAP_CONTENT;
+//        //期望的位图格式。默认为不透明
+//        para.format = 1;
+//        //当FLAG_DIM_BEHIND设置后生效。该变量指示后面的窗口变暗的程度。
+//        //1.0表示完全不透明，0.0表示没有变暗。
+//        para.dimAmount = 0.6f;
+//        para.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+//        //设置为系统提示
+//        para.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+//        //获取要显示的View
+//        final View mView = LayoutInflater.from(getApplicationContext()).inflate(
+//                R.layout.warning, null);
+//        //单击View是关闭弹窗
+//        Button confirmBtn = mView.findViewById(R.id.confirm);
+//        confirmBtn.setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                wm.removeView(mView);
+//            }
+//        });
+//        //显示弹窗
+//        wm.addView(mView, para);
     }
 
     @Override
@@ -737,9 +756,9 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
             tvDisabled.setVisibility(enabled ? View.GONE : View.VISIBLE);
 
             // Check switch state
-            SwitchCompat swEnabled = getSupportActionBar().getCustomView().findViewById(R.id.swEnabled);
-            if (swEnabled.isChecked() != enabled)
-                swEnabled.setChecked(enabled);
+//            AppCompatButton swEnabled = getSupportActionBar().getCustomView().findViewById(R.id.swEnabled);
+//            if (swEnabled.isChecked() != enabled)
+//                swEnabled.setChecked(enabled);
 
         } else if ("whitelist_wifi".equals(name) ||
                 "screen_on".equals(name) ||
@@ -796,9 +815,9 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
 
             if (adapter != null)
                 if (intent.hasExtra(EXTRA_CONNECTED) && intent.hasExtra(EXTRA_METERED)) {
-                    ivIcon.setImageResource(Util.isNetworkActive(ActivityMain.this)
-                            ? R.drawable.ic_security_white_24dp
-                            : R.drawable.ic_security_white_24dp_60);
+//                    ivIcon.setImageResource(Util.isNetworkActive(ActivityMain.this)
+//                            ? R.drawable.ic_security_white_24dp
+//                            : R.drawable.ic_security_white_24dp_60);
                     if (intent.getBooleanExtra(EXTRA_CONNECTED, false)) {
                         if (intent.getBooleanExtra(EXTRA_METERED, false))
                             adapter.setMobileActive();
@@ -820,8 +839,8 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
             Log.i(TAG, "Received " + intent);
             Util.logExtras(intent);
             int size = intent.getIntExtra(EXTRA_SIZE, -1);
-            ivIcon.setVisibility(size == 0 ? View.VISIBLE : View.GONE);
-            ivQueue.setVisibility(size == 0 ? View.GONE : View.VISIBLE);
+//            ivIcon.setVisibility(size == 0 ? View.VISIBLE : View.GONE);
+//            ivQueue.setVisibility(size == 0 ? View.GONE : View.VISIBLE);
         }
     };
 
@@ -846,6 +865,7 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
 
         // Search
         menuSearch = menu.findItem(R.id.menu_search);
+
         menuSearch.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
@@ -908,38 +928,38 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
 
         return true;
     }
-
-    private void markPro(MenuItem menu, String sku) {
-        if (sku == null || !IAB.isPurchased(sku, this)) {
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-            boolean dark = prefs.getBoolean("dark_theme", false);
-            SpannableStringBuilder ssb = new SpannableStringBuilder("  " + menu.getTitle());
-            ssb.setSpan(new ImageSpan(this, dark ? R.drawable.ic_shopping_cart_white_24dp : R.drawable.ic_shopping_cart_black_24dp), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            menu.setTitle(ssb);
-        }
-    }
+//
+//    private void markPro(MenuItem menu, String sku) {
+//        if (sku == null || !IAB.isPurchased(sku, this)) {
+//            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+//            boolean dark = prefs.getBoolean("dark_theme", false);
+//            SpannableStringBuilder ssb = new SpannableStringBuilder("  " + menu.getTitle());
+//            ssb.setSpan(new ImageSpan(this, dark ? R.drawable.ic_shopping_cart_white_24dp : R.drawable.ic_shopping_cart_black_24dp), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+//            menu.setTitle(ssb);
+//        }
+//    }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+//        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        if (prefs.getBoolean("manage_system", false)) {
-            menu.findItem(R.id.menu_app_user).setChecked(prefs.getBoolean("show_user", true));
-            menu.findItem(R.id.menu_app_system).setChecked(prefs.getBoolean("show_system", false));
-        } else {
-            Menu submenu = menu.findItem(R.id.menu_filter).getSubMenu();
-            submenu.removeItem(R.id.menu_app_user);
-            submenu.removeItem(R.id.menu_app_system);
-        }
-
-        menu.findItem(R.id.menu_app_nointernet).setChecked(prefs.getBoolean("show_nointernet", true));
-        menu.findItem(R.id.menu_app_disabled).setChecked(prefs.getBoolean("show_disabled", true));
-
-        String sort = prefs.getString("sort", "name");
-        if ("uid".equals(sort))
-            menu.findItem(R.id.menu_sort_uid).setChecked(true);
-        else
-            menu.findItem(R.id.menu_sort_name).setChecked(true);
+//        if (prefs.getBoolean("manage_system", false)) {
+//            menu.findItem(R.id.menu_app_user).setChecked(prefs.getBoolean("show_user", true));
+//            menu.findItem(R.id.menu_app_system).setChecked(prefs.getBoolean("show_system", false));
+//        } else {
+//            Menu submenu = menu.findItem(R.id.menu_filter).getSubMenu();
+//            submenu.removeItem(R.id.menu_app_user);
+//            submenu.removeItem(R.id.menu_app_system);
+//        }
+//
+//        menu.findItem(R.id.menu_app_nointernet).setChecked(prefs.getBoolean("show_nointernet", true));
+//        menu.findItem(R.id.menu_app_disabled).setChecked(prefs.getBoolean("show_disabled", true));
+//
+//        String sort = prefs.getString("sort", "name");
+//        if ("uid".equals(sort))
+//            menu.findItem(R.id.menu_sort_uid).setChecked(true);
+//        else
+//            menu.findItem(R.id.menu_sort_name).setChecked(true);
 
 //        menu.findItem(R.id.menu_lockdown).setChecked(prefs.getBoolean("lockdown", false));
 
@@ -953,35 +973,35 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
         // Handle item selection
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         switch (item.getItemId()) {
-            case R.id.menu_app_user:
-                item.setChecked(!item.isChecked());
-                prefs.edit().putBoolean("show_user", item.isChecked()).apply();
-                return true;
-
-            case R.id.menu_app_system:
-                item.setChecked(!item.isChecked());
-                prefs.edit().putBoolean("show_system", item.isChecked()).apply();
-                return true;
-
-            case R.id.menu_app_nointernet:
-                item.setChecked(!item.isChecked());
-                prefs.edit().putBoolean("show_nointernet", item.isChecked()).apply();
-                return true;
-
-            case R.id.menu_app_disabled:
-                item.setChecked(!item.isChecked());
-                prefs.edit().putBoolean("show_disabled", item.isChecked()).apply();
-                return true;
-
-            case R.id.menu_sort_name:
-                item.setChecked(true);
-                prefs.edit().putString("sort", "name").apply();
-                return true;
-
-            case R.id.menu_sort_uid:
-                item.setChecked(true);
-                prefs.edit().putString("sort", "uid").apply();
-                return true;
+//            case R.id.menu_app_user:
+//                item.setChecked(!item.isChecked());
+//                prefs.edit().putBoolean("show_user", item.isChecked()).apply();
+//                return true;
+//
+//            case R.id.menu_app_system:
+//                item.setChecked(!item.isChecked());
+//                prefs.edit().putBoolean("show_system", item.isChecked()).apply();
+//                return true;
+//
+//            case R.id.menu_app_nointernet:
+//                item.setChecked(!item.isChecked());
+//                prefs.edit().putBoolean("show_nointernet", item.isChecked()).apply();
+//                return true;
+//
+//            case R.id.menu_app_disabled:
+//                item.setChecked(!item.isChecked());
+//                prefs.edit().putBoolean("show_disabled", item.isChecked()).apply();
+//                return true;
+//
+//            case R.id.menu_sort_name:
+//                item.setChecked(true);
+//                prefs.edit().putString("sort", "name").apply();
+//                return true;
+//
+//            case R.id.menu_sort_uid:
+//                item.setChecked(true);
+//                prefs.edit().putString("sort", "uid").apply();
+//                return true;
 
 //            case R.id.menu_lockdown:
 //                menu_lockdown(item);
@@ -1041,7 +1061,7 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
         boolean whitelist_other = prefs.getBoolean("whitelist_other", false);
         boolean hintWhitelist = prefs.getBoolean("hint_whitelist", true);
         llWhitelist.setVisibility(!(whitelist_wifi || whitelist_other) && hintWhitelist && !hintUsage ? View.VISIBLE : View.GONE);
-        btnWhitelist.setOnClickListener(new View.OnClickListener() {
+        btnWhitelist.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 prefs.edit().putBoolean("hint_whitelist", false).apply();
@@ -1054,7 +1074,7 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
         Button btnPush = findViewById(R.id.btnPush);
         boolean hintPush = prefs.getBoolean("hint_push", true);
         llPush.setVisibility(hintPush && !hintUsage ? View.VISIBLE : View.GONE);
-        btnPush.setOnClickListener(new View.OnClickListener() {
+        btnPush.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 prefs.edit().putBoolean("hint_push", false).apply();
@@ -1081,7 +1101,7 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
         // Approve request
         if (intent.hasExtra(EXTRA_APPROVE)) {
             Log.i(TAG, "Requesting VPN approval");
-            swEnabled.toggle();
+            swEnabled.performClick();
         }
 
         if (intent.hasExtra(EXTRA_LOGCAT)) {
@@ -1316,7 +1336,7 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
         tvPrivacy.setMovementMethod(LinkMovementMethod.getInstance());
 
         // Handle logcat
-        view.setOnClickListener(new View.OnClickListener() {
+        view.setOnClickListener(new OnClickListener() {
             private short tap = 0;
             private Toast toast = Toast.makeText(ActivityMain.this, "", Toast.LENGTH_SHORT);
 
@@ -1340,7 +1360,7 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
 
         // Handle rate
         btnRate.setVisibility(getIntentRate(this).resolveActivity(getPackageManager()) == null ? View.GONE : View.VISIBLE);
-        btnRate.setOnClickListener(new View.OnClickListener() {
+        btnRate.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(getIntentRate(ActivityMain.this));

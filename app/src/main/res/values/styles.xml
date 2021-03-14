@@ -43,7 +43,7 @@
     </style>
 
     <style name="AppThemeTeal" parent="BaseThemeDark">
-        <item name="colorPrimary">@color/colorTealPrimary</item>
+        <item name="colorPrimary">#216b8f</item>
         <item name="colorPrimaryDark">@color/colorTealPrimaryDark</item>
         <item name="colorAccent">@color/colorTealAccent</item>
         <item name="colorOn">@color/colorTealOn</item>
@@ -51,7 +51,7 @@
     </style>
 
     <style name="AppThemeTealDark" parent="BaseThemeLight">
-        <item name="colorPrimary">@color/colorTealPrimary</item>
+        <item name="colorPrimary">#216b8f</item>
         <item name="colorPrimaryDark">@color/colorTealPrimaryDark</item>
         <item name="colorAccent">@color/colorTealAccent</item>
         <item name="colorOn">@color/colorTealOn</item>

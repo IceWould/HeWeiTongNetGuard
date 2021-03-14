@@ -699,145 +699,8 @@ public class AdapterRule extends RecyclerView.Adapter<AdapterRule.ViewHolder> im
             }
         });
 
-        // Show access rules
-        if (rule.expanded) {
-            // Access the database when expanded only
-            final AdapterAccess badapter = new AdapterAccess(context,
-                    DatabaseHelper.getInstance(context).getAccess(rule.uid));
-            holder.lvAccess.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, final int bposition, long bid) {
-                    PackageManager pm = context.getPackageManager();
-                    Cursor cursor = (Cursor) badapter.getItem(bposition);
-                    final long id = cursor.getLong(cursor.getColumnIndex("ID"));
-                    final int version = cursor.getInt(cursor.getColumnIndex("version"));
-                    final int protocol = cursor.getInt(cursor.getColumnIndex("protocol"));
-                    final String daddr = cursor.getString(cursor.getColumnIndex("daddr"));
-                    final int dport = cursor.getInt(cursor.getColumnIndex("dport"));
-                    long time = cursor.getLong(cursor.getColumnIndex("time"));
-                    int block = cursor.getInt(cursor.getColumnIndex("block"));
-
-                    PopupMenu popup = new PopupMenu(context, anchor);
-                    popup.inflate(R.menu.access);
-
-                    popup.getMenu().findItem(R.id.menu_host).setTitle(
-                            Util.getProtocolName(protocol, version, false) + " " +
-                                    daddr + (dport > 0 ? "/" + dport : ""));
-
-                    SubMenu sub = popup.getMenu().findItem(R.id.menu_host).getSubMenu();
-                    boolean multiple = false;
-                    Cursor alt = null;
-                    try {
-                        alt = DatabaseHelper.getInstance(context).getAlternateQNames(daddr);
-                        while (alt.moveToNext()) {
-                            multiple = true;
-                            sub.add(Menu.NONE, Menu.NONE, 0, alt.getString(0)).setEnabled(false);
-                        }
-                    } finally {
-                        if (alt != null)
-                            alt.close();
-                    }
-                    popup.getMenu().findItem(R.id.menu_host).setEnabled(multiple);
-
-                    markPro(context, popup.getMenu().findItem(R.id.menu_allow), ActivityPro.SKU_FILTER);
-                    markPro(context, popup.getMenu().findItem(R.id.menu_block), ActivityPro.SKU_FILTER);
-
-                    // Whois
-                    final Intent lookupIP = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.dnslytics.com/whois-lookup/" + daddr));
-                    if (pm.resolveActivity(lookupIP, 0) == null)
-                        popup.getMenu().removeItem(R.id.menu_whois);
-                    else
-                        popup.getMenu().findItem(R.id.menu_whois).setTitle(context.getString(R.string.title_log_whois, daddr));
-
-                    // Lookup port
-                    final Intent lookupPort = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.speedguide.net/port.php?port=" + dport));
-                    if (dport <= 0 || pm.resolveActivity(lookupPort, 0) == null)
-                        popup.getMenu().removeItem(R.id.menu_port);
-                    else
-                        popup.getMenu().findItem(R.id.menu_port).setTitle(context.getString(R.string.title_log_port, dport));
-
-                    popup.getMenu().findItem(R.id.menu_time).setTitle(
-                            SimpleDateFormat.getDateTimeInstance().format(time));
-
-                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(MenuItem menuItem) {
-                            int menu = menuItem.getItemId();
-                            boolean result = false;
-                            switch (menu) {
-                                case R.id.menu_whois:
-                                    context.startActivity(lookupIP);
-                                    result = true;
-                                    break;
-
-                                case R.id.menu_port:
-                                    context.startActivity(lookupPort);
-                                    result = true;
-                                    break;
-
-                                case R.id.menu_allow:
-                                    if (IAB.isPurchased(ActivityPro.SKU_FILTER, context)) {
-                                        DatabaseHelper.getInstance(context).setAccess(id, 0);
-                                        ServiceSinkhole.reload("allow host", context, false);
-                                    } else
-                                        context.startActivity(new Intent(context, ActivityPro.class));
-                                    result = true;
-                                    break;
-
-                                case R.id.menu_block:
-                                    if (IAB.isPurchased(ActivityPro.SKU_FILTER, context)) {
-                                        DatabaseHelper.getInstance(context).setAccess(id, 1);
-                                        ServiceSinkhole.reload("block host", context, false);
-                                    } else
-                                        context.startActivity(new Intent(context, ActivityPro.class));
-                                    result = true;
-                                    break;
-
-                                case R.id.menu_reset:
-                                    DatabaseHelper.getInstance(context).setAccess(id, -1);
-                                    ServiceSinkhole.reload("reset host", context, false);
-                                    result = true;
-                                    break;
-
-                                case R.id.menu_copy:
-                                    ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-                                    ClipData clip = ClipData.newPlainText("netguard", daddr);
-                                    clipboard.setPrimaryClip(clip);
-                                    return true;
-                            }
-
-                            if (menu == R.id.menu_allow || menu == R.id.menu_block || menu == R.id.menu_reset)
-                                new AsyncTask<Object, Object, Long>() {
-                                    @Override
-                                    protected Long doInBackground(Object... objects) {
-                                        return DatabaseHelper.getInstance(context).getHostCount(rule.uid, false);
-                                    }
-
-                                    @Override
-                                    protected void onPostExecute(Long hosts) {
-                                        rule.hosts = hosts;
-                                        notifyDataSetChanged();
-                                    }
-                                }.execute();
-
-                            return result;
-                        }
-                    });
-
-                    if (block == 0)
-                        popup.getMenu().removeItem(R.id.menu_allow);
-                    else if (block == 1)
-                        popup.getMenu().removeItem(R.id.menu_block);
-
-                    popup.show();
-                }
-            });
-
-            holder.lvAccess.setAdapter(badapter);
-        } else {
             holder.lvAccess.setAdapter(null);
             holder.lvAccess.setOnItemClickListener(null);
-        }
 
         // Clear access log
         holder.btnClearAccess.setOnClickListener(new View.OnClickListener() {
@@ -884,15 +747,15 @@ public class AdapterRule extends RecyclerView.Adapter<AdapterRule.ViewHolder> im
         }
     }
 
-    private void markPro(Context context, MenuItem menu, String sku) {
-        if (sku == null || !IAB.isPurchased(sku, context)) {
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-            boolean dark = prefs.getBoolean("dark_theme", false);
-            SpannableStringBuilder ssb = new SpannableStringBuilder("  " + menu.getTitle());
-            ssb.setSpan(new ImageSpan(context, dark ? R.drawable.ic_shopping_cart_white_24dp : R.drawable.ic_shopping_cart_black_24dp), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            menu.setTitle(ssb);
-        }
-    }
+//    private void markPro(Context context, MenuItem menu, String sku) {
+//        if (sku == null || !IAB.isPurchased(sku, context)) {
+//            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+//            boolean dark = prefs.getBoolean("dark_theme", false);
+//            SpannableStringBuilder ssb = new SpannableStringBuilder("  " + menu.getTitle());
+//            ssb.setSpan(new ImageSpan(context, dark ? R.drawable.ic_shopping_cart_white_24dp : R.drawable.ic_shopping_cart_black_24dp), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+//            menu.setTitle(ssb);
+//        }
+//    }
 
     private void updateRule(Context context, Rule rule, boolean root, List<Rule> listAll) {
         SharedPreferences wifi = context.getSharedPreferences("wifi", Context.MODE_PRIVATE);

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_description">NetGuard 提供简便且专业的方式阻止网络访问 - 无需 root. 可单独允许或拒绝应用和地址访问您的 Wi-Fi 和/或移动数据连接.</string>
+    <string name="app_name">流量卫士</string>
+    <string name="app_description">流量卫士提供简便且专业的方式阻止网络访问 - 无需 root. 可单独允许或拒绝应用和地址访问您的 Wi-Fi 和/或移动数据连接.</string>
     <string name="app_android">网络守护需要 Android 5.1 或更高版本</string>
     <string name="app_xposed">Xposed 会造成过多崩溃，这可能会导致网络守护从 Google Play 商店中被移除，因此在安装 Xposed 的情况下不支持使用网络守护。</string>
     <string name="app_privacy"><a href="https://www.netguard.me/privacy/">隐私政策</a></string>
@@ -124,13 +125,13 @@
     <string name="setting_technical_networks">网络</string>
     <string name="setting_technical_subscription">付费订阅</string>
     <string name="summary_install">显示状态栏通知直接对新安装的软件进行设置 (专业版功能)</string>
-    <string name="summary_auto">禁用小部件后, 在设定分钟后自动再次启用NetGuard\n输入零以禁用此选项</string>
+    <string name="summary_auto">禁用小部件后, 在设定分钟后自动再次启用流量卫士\n输入零以禁用此选项</string>
     <string name="summary_delay">关屏后，保持亮屏规则在指定的分钟数内有效 (输入零以禁用此选项)</string>
     <string name="summary_update">每日两次检查 GitHub 上的更新</string>
     <string name="summary_tethering">根据 Android 版本不同, 网络共享可能可以或可能无法正常工作. 共享网络流量无法被过滤.</string>
     <string name="summary_subnet">启用子网路由; 可能有助开启 Wi-fi 通话, 但也可能触发系统 bug 或增加电量消耗</string>
     <string name="summary_lan">允许应用连接至局域网地址, 如 10.0.0.0/8, 172.16.0.0/12 及 192.168.0.0/16</string>
-    <string name="summary_ip6">将 IPv6 流量导至 NetGuardu并进行选择性允许或阻止</string>
+    <string name="summary_ip6">将 IPv6 流量导至 流量卫士并进行选择性允许或阻止</string>
     <string name="summary_wifi_home">仅将Wi-Fi网络规则应用于所选定的网络 (将移动网络规则应用于其他Wi-Fi网络)</string>
     <string name="summary_metered">将移动网络规则应用于按流量计费的 (付费, 共享) Wi-Fi网络</string>
     <string name="summary_metered_2g">将Wi-Fi网络规则应用于2G数据连接</string>
@@ -148,7 +149,7 @@
     <string name="summary_rcode">默认值为 3 (NXDOMAIN)，即“域名不存在”。</string>
     <string name="summary_validate">用于验证网络连接端口为 443 (https) 的域名。</string>
     <string name="summary_socks5_enabled">仅将 TCP 流量导向至代理服务器</string>
-    <string name="summary_watchdog">定时检查 NetGuard 运行状况 (输入 0 禁用此选项). 这可能导致额外电量消耗.</string>
+    <string name="summary_watchdog">定时检查 流量卫士 运行状况 (输入 0 禁用此选项). 这可能导致额外电量消耗.</string>
     <string name="summary_stats">在状态栏通知中显示网速示意图</string>
     <string-array name="default_wifi_home"></string-array>
     <string name="msg_sure">是否确认?</string>
@@ -156,20 +157,20 @@
     <string name="msg_packages">%1$d 已允许, %2$d 已拦截</string>
     <string name="msg_hosts">%1$d 已允许, %2$d 已拦截, %3$d hosts</string>
     <string name="msg_waiting">等待事件</string>
-    <string name="msg_disabled">NetGuard已被停用, 请使用上方的开关启用NetGuard</string>
-    <string name="msg_revoked">NetGuard已被停用, 可能是由于您启动了另一个基于VPN的应用</string>
+    <string name="msg_disabled">流量卫士已被停用, 请使用上方的开关启用流量卫士</string>
+    <string name="msg_revoked">流量卫士已被停用, 可能是由于您启动了另一个基于VPN的应用</string>
     <string name="msg_installed">\'%1$s\' 已安装</string>
     <string name="msg_installed_n">已安装</string>
     <string name="msg_access">%1$s 尝试进行网络连接</string>
     <string name="msg_access_n">尝试的互联网访问</string>
     <string name="msg_completed">操作完成</string>
-    <string name="msg_vpn">NetGuard 使用一个本地 VPN 对网络流量进行过滤.
+    <string name="msg_vpn">流量卫士 使用一个本地 VPN 对网络流量进行过滤.
 因此请在下一个对话框中允许建立网络连接.
 您的网络流量不会被导向任何远程 VPN 服务器.</string>
-    <string name="msg_autostart">由于您使用的 Android 版本存在 bug, NetGuard 无法开机自启.</string>
+    <string name="msg_autostart">由于您使用的 Android 版本存在 bug, 流量卫士 无法开机自启.</string>
     <string name="msg_error">发生未知错误: \'%s\'</string>
     <string name="msg_start_failed">Android 拒绝启动 VPN 服务. 这可能是由您当前使用的 Android 版本中的 bug 导致.</string>
-    <string name="msg_try">试用NetGuard</string>
+    <string name="msg_try">试用流量卫士</string>
     <string name="msg_terms">捐赠即表明您同意 <a href="http://www.netguard.me/#terms">条款与条件</a></string>
     <string name="msg_dimming">如果您在下一个对话框中无法点击确定, 可能是另一个应用正在控制屏幕(如屏幕亮度调节软件).</string>
     <string name="msg_mbday">± %1$.3f▲ %2$.3f▼ MB/天</string>
@@ -179,11 +180,11 @@
     <string name="msg_mb">%1$7.3f▲ %2$7.3f▼ MB</string>
     <string name="msg_gb">%1$7.3f▲ %2$7.3f▼ GB</string>
     <string name="msg_count">%dx</string>
-    <string name="msg_doze">为获得一致的使用效果, 请停用 Android 系统针对 NetGuard的电池优化.
-\n\nIn 在下一个对话框中, 选择上方的 \"所有应用\", 点击列表中的 NetGuard 并选择和确认 \"不要优化\".</string>
-    <string name="msg_datasaving">为保证一致性, 请为 NetGuard 禁用 Android 的流量控制功能
+    <string name="msg_doze">为获得一致的使用效果, 请停用 Android 系统针对 流量卫士的电池优化.
+\n\nIn 在下一个对话框中, 选择上方的 \"所有应用\", 点击列表中的 流量卫士 并选择和确认 \"不要优化\".</string>
+    <string name="msg_datasaving">为保证一致性, 请为 流量卫士 禁用 Android 的流量控制功能
 \n\n请在下一个对话框中, 启用 \"后台数据\" 及 \"不限制数据使用\"</string>
-    <string name="msg_filter">使用过滤功能将导致系统认为 NetGuard 使用了额外的电量和数据流量, 尽管这些使用量是由原应用所致.</string>
+    <string name="msg_filter">使用过滤功能将导致系统认为 流量卫士 使用了额外的电量和数据流量, 尽管这些使用量是由原应用所致.</string>
     <string name="msg_filter4">Android 4 需启用过滤</string>
     <string name="msg_log_disabled">流量记录已禁用, 使用上方的开关以启用日志. 流量记录可能会导致额外电量消耗.</string>
     <string name="msg_clear_rules">此操作将重置所有规则和条件为默认值</string>
@@ -196,10 +197,10 @@
     <string name="msg_stop_forward">停止转发 %1$s 端口 %2$d?</string>
     <string name="msg_metered">网络按流量计费</string>
     <string name="msg_inactive">无活跃网络连接</string>
-    <string name="msg_queue">NetGuard 正忙</string>
+    <string name="msg_queue">流量卫士 正忙</string>
     <string name="msg_update">有可用更新, 请点击下载</string>
     <string name="msg_usage">您可以点击应用旁的图标来允许 (绿色) 或禁止 (红色) Wi-Fi 或移动网络连接</string>
-    <string name="msg_fairemail">如果您安装了 NetGuard 来保护您的隐私，你也许会对 <a href="https://email.faircode.eu/">FairEmail</a> 感兴趣，一个开源、隐私友好的电子邮件应用。</string>
+    <string name="msg_fairemail">如果您安装了 流量卫士 来保护您的隐私，你也许会对 <a href="https://email.faircode.eu/">FairEmail</a> 感兴趣，一个开源、隐私友好的电子邮件应用。</string>
     <string name="msg_whitelist">默认允许网络连接, 可在设置中进行更改</string>
     <string name="msg_push">大部分消息推送由作为系统组件的 Play 服务完成, 因此默认允许其进行网络连接</string>
     <string name="msg_system">您可在高级选项中启用管理系统应用</string>

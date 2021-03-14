@@ -52,6 +52,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import info.hoang8f.android.segmented.SegmentedGroup;
 
@@ -66,6 +67,7 @@ public class Rule {
     public int icon;
     public String name;
     public String usage;
+    public long usageLong;
     public String version;
     public boolean system;
     public boolean internet;
@@ -366,7 +368,19 @@ public class Rule {
             nobody.applicationInfo.icon = 0;
             listPI.add(nobody);
 
+//            PackageInfo otherApp = new PackageInfo();
+//            otherApp.packageName = "系统";
+//            otherApp.versionCode = Build.VERSION.SDK_INT;
+//            otherApp.versionName = Build.VERSION.RELEASE;
+//            otherApp.applicationInfo = new ApplicationInfo();
+//            otherApp.applicationInfo.uid = 9998;
+//            otherApp.applicationInfo.icon = 0;
+//
             DatabaseHelper dh = DatabaseHelper.getInstance(context);
+//            Rule otherAppRule = new Rule(dh,otherApp,context);
+//            otherAppRule.system = false;
+//            listRules.add(otherAppRule);
+
             for (PackageInfo info : listPI)
                 try {
                     // Skip self
@@ -414,13 +428,23 @@ public class Rule {
                         rule.related = listPkg.toArray(new String[0]);
 
                         rule.hosts = dh.getHostCount(rule.uid, true);
-                        if(dataUsage.containsKey(rule.uid)){
-                            rule.usage = humanReadableByteCountBin(dataUsage.get(rule.uid));
+                        if(rule.name.equals("系统")){
+                            Set<Map.Entry<Integer, Long>> entrySet = dataUsage.entrySet();
+                            for(Map.Entry<Integer, Long> entry: entrySet){
+                                rule.usageLong += entry.getValue();
+                            }
+                        }else if(dataUsage.containsKey(rule.uid)){
+                            rule.usageLong = dataUsage.get(rule.uid);
+                            rule.usage = humanReadableByteCountBin(rule.usageLong);
                         }else{
+                            rule.usageLong = 0;
                             rule.usage = "0.0 KB";
                         }
                         rule.updateChanged(default_wifi, default_other, default_roaming);
-
+                        if(rule.system){
+                            wifi.edit().putBoolean(rule.packageName, true).apply();
+                            other.edit().putBoolean(rule.packageName, true).apply();
+                        }
                         listRules.add(rule);
                     }
                 } catch (Throwable ex) {
@@ -431,32 +455,19 @@ public class Rule {
             final Collator collator = Collator.getInstance(Locale.getDefault());
             collator.setStrength(Collator.SECONDARY); // Case insensitive, process accents etc
 
-            String sort = prefs.getString("sort", "name");
-            if ("uid".equals(sort))
-                Collections.sort(listRules, new Comparator<Rule>() {
-                    @Override
-                    public int compare(Rule rule, Rule other) {
-                        if (rule.uid < other.uid)
-                            return -1;
-                        else if (rule.uid > other.uid)
-                            return 1;
-                        else {
-                            int i = collator.compare(rule.name, other.name);
-                            return (i == 0 ? rule.packageName.compareTo(other.packageName) : i);
-                        }
+//        if (!rule.system)
+//        wifi.edit().putBoolean(rule.packageName, true).apply();
+//        other.edit().putBoolean(rule.packageName, true).apply();
+
+            Collections.sort(listRules, new Comparator<Rule>() {
+                @Override
+                public int compare(Rule rule, Rule other) {
+                    if(rule.usageLong == other.usageLong){
+                        return 0;
                     }
-                });
-            else
-                Collections.sort(listRules, new Comparator<Rule>() {
-                    @Override
-                    public int compare(Rule rule, Rule other) {
-                        if (all || rule.changed == other.changed) {
-                            int i = collator.compare(rule.name, other.name);
-                            return (i == 0 ? rule.packageName.compareTo(other.packageName) : i);
-                        }
-                        return (rule.changed ? -1 : 1);
-                    }
-                });
+                    return rule.usageLong > other.usageLong ? -1 : 1;
+                }
+            });
 
             return listRules;
         }
@@ -497,7 +508,7 @@ public class Rule {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    private static HashMap<Integer, Long> updateDataUsage(Context context){
+    public static HashMap<Integer, Long> updateDataUsage(Context context){
         NetworkStatsManager networkStatsManager = (NetworkStatsManager) context.getSystemService(Context.NETWORK_STATS_SERVICE);
 
         HashMap<Integer, Long> toReturn = new HashMap<Integer, Long>();
@@ -534,7 +545,7 @@ public class Rule {
         }
         long absB = bytes == Long.MIN_VALUE ? Long.MAX_VALUE : Math.abs(bytes);
         if (absB < 1024) {
-            return bytes + "0 KB";
+            return "0 KB";
         }
         long value = absB;
         CharacterIterator ci = new StringCharacterIterator("KMGTPE");
