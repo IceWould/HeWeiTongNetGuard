@@ -5,9 +5,9 @@
     "environmentVariables": []
   },
   "cmake": {
-    "cmakeArtifactsBaseFolder": "C:\\Users\\pwz26\\OneDrive\\Desktop\\HeWeiTongNetGuard\\app\\.cxx\\cmake\\debug\\x86",
-    "cmakeServerLogFile": "C:\\Users\\pwz26\\OneDrive\\Desktop\\HeWeiTongNetGuard\\app\\.cxx\\cmake\\debug\\x86\\cmake_server_log.txt",
-    "cmakeWrappingBaseFolder": "C:\\Users\\pwz26\\OneDrive\\Desktop\\HeWeiTongNetGuard\\app\\.cxx\\cxx\\debug\\x86",
+    "cmakeArtifactsBaseFolder": "C:\\Users\\pwz26\\OneDrive\\Desktop\\IceWould\\HeWeiTongNetGuard\\app\\.cxx\\cmake\\debug\\x86",
+    "cmakeServerLogFile": "C:\\Users\\pwz26\\OneDrive\\Desktop\\IceWould\\HeWeiTongNetGuard\\app\\.cxx\\cmake\\debug\\x86\\cmake_server_log.txt",
+    "cmakeWrappingBaseFolder": "C:\\Users\\pwz26\\OneDrive\\Desktop\\IceWould\\HeWeiTongNetGuard\\app\\.cxx\\cxx\\debug\\x86",
     "effectiveConfiguration": {
       "name": "traditional-android-studio-cmake-environment",
       "description": "Composite reified CMakeSettings configuration",
@@ -15,13 +15,13 @@
       "inheritEnvironments": [
         "ndk"
       ],
-      "buildRoot": "C:\\Users\\pwz26\\OneDrive\\Desktop\\HeWeiTongNetGuard\\app\\.cxx\\cmake\\debug\\x86",
+      "buildRoot": "C:\\Users\\pwz26\\OneDrive\\Desktop\\IceWould\\HeWeiTongNetGuard\\app\\.cxx\\cmake\\debug\\x86",
       "cmakeToolchain": "C:\\Users\\pwz26\\AppData\\Local\\Android\\Sdk\\ndk\\21.1.6352462\\build\\cmake\\android.toolchain.cmake",
       "cmakeExecutable": "C:\\Users\\pwz26\\AppData\\Local\\Android\\Sdk\\cmake\\3.10.2.4988404\\bin\\cmake.exe",
       "variables": [
         {
           "name": "CMAKE_FIND_ROOT_PATH",
-          "value": "C:\\Users\\pwz26\\OneDrive\\Desktop\\HeWeiTongNetGuard\\app\\.cxx\\cmake\\debug\\prefab\\x86\\prefab"
+          "value": "C:\\Users\\pwz26\\OneDrive\\Desktop\\IceWould\\HeWeiTongNetGuard\\app\\.cxx\\cmake\\debug\\prefab\\x86\\prefab"
         },
         {
           "name": "CMAKE_BUILD_TYPE",
@@ -53,7 +53,7 @@
         },
         {
           "name": "CMAKE_LIBRARY_OUTPUT_DIRECTORY",
-          "value": "C:\\Users\\pwz26\\OneDrive\\Desktop\\HeWeiTongNetGuard\\app\\build\\intermediates\\cmake\\debug\\obj\\x86"
+          "value": "C:\\Users\\pwz26\\OneDrive\\Desktop\\IceWould\\HeWeiTongNetGuard\\app\\build\\intermediates\\cmake\\debug\\obj\\x86"
         },
         {
           "name": "CMAKE_MAKE_PROGRAM",
@@ -74,14 +74,14 @@
       ]
     }
   },
-  "cxxBuildFolder": "C:\\Users\\pwz26\\OneDrive\\Desktop\\HeWeiTongNetGuard\\app\\.cxx\\cmake\\debug\\x86",
+  "cxxBuildFolder": "C:\\Users\\pwz26\\OneDrive\\Desktop\\IceWould\\HeWeiTongNetGuard\\app\\.cxx\\cmake\\debug\\x86",
   "info": {
     "abi": "X86",
     "bitness": 32,
     "deprecated": false,
     "default": true
   },
-  "originalCxxBuildFolder": "C:\\Users\\pwz26\\OneDrive\\Desktop\\HeWeiTongNetGuard\\app\\.cxx\\cmake\\debug\\x86",
+  "originalCxxBuildFolder": "C:\\Users\\pwz26\\OneDrive\\Desktop\\IceWould\\HeWeiTongNetGuard\\app\\.cxx\\cmake\\debug\\x86",
   "variant": {
     "buildSystemArgumentList": [
       "-DANDROID_PLATFORM\u003dandroid-22"
@@ -102,12 +102,12 @@
         "ninjaExe": "C:\\Users\\pwz26\\AppData\\Local\\Android\\Sdk\\cmake\\3.10.2.4988404\\bin\\ninja.exe"
       },
       "cmakeToolchainFile": "C:\\Users\\pwz26\\AppData\\Local\\Android\\Sdk\\ndk\\21.1.6352462\\build\\cmake\\android.toolchain.cmake",
-      "cxxFolder": "C:\\Users\\pwz26\\OneDrive\\Desktop\\HeWeiTongNetGuard\\app\\.cxx",
+      "cxxFolder": "C:\\Users\\pwz26\\OneDrive\\Desktop\\IceWould\\HeWeiTongNetGuard\\app\\.cxx",
       "gradleModulePathName": ":app",
-      "intermediatesFolder": "C:\\Users\\pwz26\\OneDrive\\Desktop\\HeWeiTongNetGuard\\app\\build\\intermediates",
-      "makeFile": "C:\\Users\\pwz26\\OneDrive\\Desktop\\HeWeiTongNetGuard\\app\\CMakeLists.txt",
-      "moduleBuildFile": "C:\\Users\\pwz26\\OneDrive\\Desktop\\HeWeiTongNetGuard\\app\\build.gradle",
-      "moduleRootFolder": "C:\\Users\\pwz26\\OneDrive\\Desktop\\HeWeiTongNetGuard\\app",
+      "intermediatesFolder": "C:\\Users\\pwz26\\OneDrive\\Desktop\\IceWould\\HeWeiTongNetGuard\\app\\build\\intermediates",
+      "makeFile": "C:\\Users\\pwz26\\OneDrive\\Desktop\\IceWould\\HeWeiTongNetGuard\\app\\CMakeLists.txt",
+      "moduleBuildFile": "C:\\Users\\pwz26\\OneDrive\\Desktop\\IceWould\\HeWeiTongNetGuard\\app\\build.gradle",
+      "moduleRootFolder": "C:\\Users\\pwz26\\OneDrive\\Desktop\\IceWould\\HeWeiTongNetGuard\\app",
       "ndkDefaultAbiList": [
         "ARMEABI_V7A",
         "ARM64_V8A",
@@ -171,13 +171,12 @@
       "ndkDefaultStl": "LIBCXX_STATIC",
       "ndkVersion": "21.1.6352462",
       "project": {
-        "compilerSettingsCacheFolder": "C:\\Users\\pwz26\\OneDrive\\Desktop\\HeWeiTongNetGuard\\.cxx",
-        "cxxFolder": "C:\\Users\\pwz26\\OneDrive\\Desktop\\HeWeiTongNetGuard\\.cxx",
-        "ideBuildTargetAbi": "x86",
+        "compilerSettingsCacheFolder": "C:\\Users\\pwz26\\OneDrive\\Desktop\\IceWould\\HeWeiTongNetGuard\\.cxx",
+        "cxxFolder": "C:\\Users\\pwz26\\OneDrive\\Desktop\\IceWould\\HeWeiTongNetGuard\\.cxx",
         "isBuildOnlyTargetAbiEnabled": true,
         "isCmakeBuildCohabitationEnabled": false,
         "isNativeCompilerSettingsCacheEnabled": false,
-        "rootBuildGradleFolder": "C:\\Users\\pwz26\\OneDrive\\Desktop\\HeWeiTongNetGuard",
+        "rootBuildGradleFolder": "C:\\Users\\pwz26\\OneDrive\\Desktop\\IceWould\\HeWeiTongNetGuard",
         "sdkFolder": "C:\\Users\\pwz26\\AppData\\Local\\Android\\Sdk",
         "isPrefabEnabled": false
       },
@@ -194,13 +193,16 @@
         "SYSTEM": {}
       }
     },
-    "objFolder": "C:\\Users\\pwz26\\OneDrive\\Desktop\\HeWeiTongNetGuard\\app\\build\\intermediates\\cmake\\debug\\obj",
+    "objFolder": "C:\\Users\\pwz26\\OneDrive\\Desktop\\IceWould\\HeWeiTongNetGuard\\app\\build\\intermediates\\cmake\\debug\\obj",
     "variantName": "debug",
     "validAbiList": [
-      "X86"
+      "ARMEABI_V7A",
+      "ARM64_V8A",
+      "X86",
+      "X86_64"
     ],
-    "prefabDirectory": "C:\\Users\\pwz26\\OneDrive\\Desktop\\HeWeiTongNetGuard\\app\\.cxx\\cmake\\debug\\prefab",
+    "prefabDirectory": "C:\\Users\\pwz26\\OneDrive\\Desktop\\IceWould\\HeWeiTongNetGuard\\app\\.cxx\\cmake\\debug\\prefab",
     "prefabPackageDirectoryList": []
   },
-  "prefabFolder": "C:\\Users\\pwz26\\OneDrive\\Desktop\\HeWeiTongNetGuard\\app\\.cxx\\cmake\\debug\\prefab\\x86"
+  "prefabFolder": "C:\\Users\\pwz26\\OneDrive\\Desktop\\IceWould\\HeWeiTongNetGuard\\app\\.cxx\\cmake\\debug\\prefab\\x86"
 }

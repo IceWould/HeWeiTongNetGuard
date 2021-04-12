@@ -1,5 +1,6 @@
 package eu.faircode.netguard;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Service;
@@ -9,6 +10,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkInfo;
@@ -16,6 +18,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.telephony.CellInfo;
+import android.telephony.CellInfoGsm;
+import android.telephony.CellSignalStrengthGsm;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +31,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
 
 import com.lzf.easyfloat.EasyFloat;
 
@@ -59,20 +66,20 @@ public class TrafficChecker extends Service {
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.i( "kd", "This is  your alarm !");
+        Log.i("kd", "This is  your alarm !");
         HashMap<Integer, Long> result = updateDataUsage(this.getApplicationContext());
         View view = EasyFloat.getAppFloatView(FLOAT_WINDOW_TAG);
         long totalUsage = 0;
         Set<Map.Entry<Integer, Long>> entrySet = result.entrySet();
-        for(Map.Entry<Integer, Long> entry: entrySet){
+        for (Map.Entry<Integer, Long> entry : entrySet) {
             totalUsage += entry.getValue();
         }
         String string = humanReadableByteCountBin(totalUsage);
         String[] splited = string.split(" ");
         ((TextView) view.findViewById(R.id.fw_usage_number)).setText(splited[0]);
-        if(splited[0].length() >= 3){
+        if (splited[0].length() >= 3) {
             ((TextView) view.findViewById(R.id.fw_usage_number)).setTextSize(30);
-        }else{
+        } else {
             ((TextView) view.findViewById(R.id.fw_usage_number)).setTextSize(40);
         }
         ((TextView) view.findViewById(R.id.fw_usage_unit)).setText(splited[1]);
@@ -108,9 +115,6 @@ public class TrafficChecker extends Service {
 //        wm.addView(mView, para);
 
 
-
-
-
 //        new AlertDialog.Builder(getApplicationContext())
 //                .setTitle("Delete entry")
 //                .setMessage("Are you sure you want to delete this entry?")
@@ -128,10 +132,10 @@ public class TrafficChecker extends Service {
 //                .setIcon(android.R.drawable.ic_dialog_alert)
 //                .show();
 
-        if(prevUsage != -1 && difUsage > ((long)5 << 20)){
+        if (prevUsage != -1 && difUsage > ((long) 5 << 20)) {
             AlertDialog alertDialog = new AlertDialog.Builder(this)
                     .setTitle("流量预警")
-                    .setMessage("在过去一分钟内使用了"+ humanReadableByteCountBin(difUsage) +"流量！！！")
+                    .setMessage("在过去一分钟内使用了" + humanReadableByteCountBin(difUsage) + "流量！！！")
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -145,32 +149,44 @@ public class TrafficChecker extends Service {
         }
 
 
-        ConnectivityManager connMgr =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        boolean isMobileConn = false;
-        for (Network network : connMgr.getAllNetworks()) {
-            NetworkInfo networkInfo = connMgr.getNetworkInfo(network);
-            if (networkInfo.getType() == ConnectivityManager.TYPE_MOBILE) {
-                isMobileConn |= networkInfo.isConnected();
-            }
-        }
+//        boolean isMobileConn = ActivityMain.mSignalStrength >= -90;
+//        TelephonyManager telephonyManager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
+//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//            // TODO: Consider calling
+//            //    ActivityCompat#requestPermissions
+//            // here to request the missing permissions, and then overriding
+//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+//            //                                          int[] grantResults)
+//            // to handle the case where the user grants the permission. See the documentation
+//            // for ActivityCompat#requestPermissions for more details.
+//
+//        }
+////        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+//            telephonyManager.getSignalStrength().getGsmSignalStrength();
+////        }
+//        CellInfo cellInfo = telephonyManager.getAllCellInfo().get(0);
+//        cellInfo.getCellSignalStrength();
 
-        if(isMobileConn && lastNotifyTime < System.currentTimeMillis() - 1000 * 60 * 10 && prefs.getBoolean("enabled", false)){
-            AlertDialog alertDialog = new AlertDialog.Builder(this)
-                    .setTitle("连接警告")
-                    .setMessage("已检测到陆地信号，请断开海洋wifi！")
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                        }
-                    })
-                    .setIcon(R.drawable.ic_security_color_24dp)
-                    .create();
-
-            alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
-            alertDialog.show();
-            lastNotifyTime = System.currentTimeMillis();
-        }
+//        CellInfoGsm cellinfogsm = (CellInfoGsm) telephonyManager.getAllCellInfo().get(0);
+//        CellSignalStrengthGsm cellSignalStrengthGsm = cellinfogsm.getCellSignalStrength();
+//        isMobileConn =  cellSignalStrengthGsm.getDbm() != 0;
+//        System.out.println("当前信号强度：：："+ ActivityMain.mSignalStrength);
+//        if(isMobileConn && lastNotifyTime < System.currentTimeMillis() - 1000 * 60 * 10 && prefs.getBoolean("enabled", false)){
+//            AlertDialog alertDialog = new AlertDialog.Builder(this)
+//                    .setTitle("连接警告")
+//                    .setMessage("已检测到陆地信号，请断开海洋wifi！")
+//                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                        }
+//                    })
+//                    .setIcon(R.drawable.ic_security_color_24dp)
+//                    .create();
+//
+//            alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
+//            alertDialog.show();
+//            lastNotifyTime = System.currentTimeMillis();
+//        }
 
         prevUsage = totalUsage;
         return super.onStartCommand(intent, flags, startId);

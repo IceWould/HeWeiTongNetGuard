@@ -19,6 +19,7 @@ package eu.faircode.netguard;
     Copyright 2015-2019 by Marcel Bokhorst (M66B)
 */
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.app.AppOpsManager;
@@ -43,6 +44,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.provider.Settings;
+import android.telephony.PhoneStateListener;
+import android.telephony.SignalStrength;
 import android.telephony.TelephonyManager;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -93,6 +96,7 @@ import com.lzf.easyfloat.enums.ShowPattern;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -101,6 +105,7 @@ import info.hoang8f.android.segmented.SegmentedGroup;
 
 public class ActivityMain extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "NetGuard.Main";
+    public static final long compileTime = 1616055792000L;
 
     private boolean running = false;
 //    private ImageView ivIcon;
@@ -122,6 +127,7 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
     private static final int REQUEST_INVITE = 2;
     private static final int REQUEST_LOGCAT = 3;
     public static final int REQUEST_ROAMING = 4;
+    public static final int REQUEST_FINE_LOCATION = 5;
 
     private static final int MIN_SDK = Build.VERSION_CODES.LOLLIPOP_MR1;
 
@@ -140,6 +146,7 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
     private RadioButton btnUsageToday;
     private RadioButton btnUsageYesterday;
     private static boolean isEnabled = false;
+    public static int mSignalStrength = 0;
 
     public static void setBtnEnabled(boolean isActivated){
         isEnabled = isActivated;
@@ -556,6 +563,40 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
 
         prefs.edit().putBoolean("enable", true).apply();
 
+//        long currentTime = new Date().getTime();
+//        if (compileTime + 30*24*60*60*1000L < currentTime) {
+//            Toast.makeText(this, "此版本的试用期限已到，请下载正式版！", Toast.LENGTH_SHORT).show();
+//            System.out.println("此版本的试用期限已到，请下载正式版！");
+//            System.exit(0);
+//        }else{
+//            Toast.makeText(this, "试用版本，4月18日后将无法使用！", Toast.LENGTH_LONG).show();
+//        }
+
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FINE_LOCATION);
+        }
+
+
+        TelephonyManager mTelephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        mTelephonyManager.listen(new MyPhoneStateListener(), PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
+
+    }
+
+    static class MyPhoneStateListener extends PhoneStateListener {
+
+        @Override
+        public void onSignalStrengthsChanged(SignalStrength signalStrength) {
+            super.onSignalStrengthsChanged(signalStrength);
+            mSignalStrength = signalStrength.getGsmSignalStrength();
+            mSignalStrength = (2 * mSignalStrength) - 113; // -> dBm
+        }
     }
 
     @Override

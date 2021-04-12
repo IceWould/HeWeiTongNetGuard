@@ -56,6 +56,7 @@ import java.util.Set;
 
 import info.hoang8f.android.segmented.SegmentedGroup;
 
+import static android.content.Context.SYSTEM_HEALTH_SERVICE;
 import static android.content.Context.TELEPHONY_SERVICE;
 import static androidx.core.content.ContextCompat.getSystemService;
 
@@ -436,6 +437,9 @@ public class Rule {
                         }else if(dataUsage.containsKey(rule.uid)){
                             rule.usageLong = dataUsage.get(rule.uid);
                             rule.usage = humanReadableByteCountBin(rule.usageLong);
+                            if(rule.usageLong != 0){
+//                                System.out.println(rule.packageName + " " + rule.usage);
+                            }
                         }else{
                             rule.usageLong = 0;
                             rule.usage = "0.0 KB";
@@ -515,14 +519,17 @@ public class Rule {
 
         NetworkStats summaryStats;
         NetworkStats.Bucket summaryBucket = new NetworkStats.Bucket();
-        System.out.println(Rule.segmentedGroupDataUsage.getCheckedRadioButtonId() );
+//        System.out.println(Rule.segmentedGroupDataUsage.getCheckedRadioButtonId() );
         try {
-            if(Rule.segmentedGroupDataUsage.getCheckedRadioButtonId() == segmentTodayID){
-                summaryStats = networkStatsManager.querySummary(ConnectivityManager.TYPE_WIFI, "", getTimesMorning(), System.currentTimeMillis());
-            }else{
-                summaryStats = networkStatsManager.querySummary(ConnectivityManager.TYPE_WIFI, "", getTimesMorning() - 24*60*60*1000, getTimesMorning());
-            }
+//            if(Rule.segmentedGroupDataUsage.getCheckedRadioButtonId() == segmentTodayID){
+                summaryStats = networkStatsManager.querySummary(ConnectivityManager.TYPE_WIFI, "", getTimesMorning() + 17 * 60 * 60 * 1000, getTimesMorning() + 18 * 60 * 60 * 1000);
+//            }else{
+//                summaryStats = networkStatsManager.querySummary(ConnectivityManager.TYPE_WIFI, "", getTimesMorning() - 24*60*60*1000, getTimesMorning());
+//            }
             do {
+//                Log.e("Outputs:::", String.valueOf(summaryBucket.getUid()));
+//                Log.e("Outputs:::", summaryBucket.toString() + " " + humanReadableByteCountBin(summaryBucket.getRxBytes()));
+//                Log.e("Outputs:::", summaryBucket.toString() + " " + humanReadableByteCountBin(summaryBucket.getTxBytes()));
                 summaryStats.getNextBucket(summaryBucket);
                 int summaryUid = summaryBucket.getUid();
                 if (toReturn.containsKey(summaryUid)) {
